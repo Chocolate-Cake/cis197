@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  	<title>
+    	Final Project - Scheduling App
+  	</title>
+    <script src="../js/jquery-1.11.3.min.js"></script>
+    <script src="../js/underscore-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/backbone-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/handlebars.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/socket.io.js" type="text/javascript" charset="utf-8"></script>
+    <script src="../js/bootstrap.min.js"></script>
+  </head>
+  <body>
+    <table style="border: 1px solid black;width:100%">
+      <tr>
+        <td style="border: 1px solid black; width:80%; padding:5px">
+          <div id='scheduleTitleBox' style='height:20px; border: 1px solid black; text-align:center'>
+              SCHEDULE NAME GOES HERE
+          </div>
+          <div id="scheduleBox" style="overflow:scroll; height:670px; text-align: center">
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            <h1 style='color:blue'>TODO: FIGURE OUT HOW TO RENDER</h1>
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+
+
+            Schedule gets pulled from databse and goes here. 
+
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+
+            <h1>PROOF OF CONCEPT</h1>
+
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+            text
+            <br>
+
+
+
+
+          </div>
+        </td>
+        <td style="border: 1px solid black;width:20% padding:5px">
+
+          <div class="addeventBox" style="border: 1px solid black">
+            <b>ADD A NEW EVENT TO (SCHEDULE NAME)</b>
+            <br>
+            <br>
+          <input id="eventName" type="text" placeholder="event name here"/>
+          <br>
+          <br>
+          Event date:
+          <select id="eventDay">
+            <option class="eventDaySelect" value="1">1</option>
+            <option class="eventDaySelect" value="2">2</option>
+            <option class="eventDaySelect" value="3">3</option>
+            <option class="eventDaySelect" value="4">4</option>
+            <option class="eventDaySelect" value="5">5</option>
+            <option class="eventDaySelect" value="6">6</option>
+            <option class="eventDaySelect" value="7">7</option>
+            <option class="eventDaySelect" value="8">8</option>
+            <option class="eventDaySelect" value="9">9</option>
+            <option class="eventDaySelect" value="10">10</option>
+            <option class="eventDaySelect" value="11">11</option>
+            <option class="eventDaySelect" value="12">12</option>
+            <option class="eventDaySelect" value="13">13</option>
+            <option class="eventDaySelect" value="14">14</option>
+            <option class="eventDaySelect" value="15">15</option>
+            <option class="eventDaySelect" value="16">16</option>
+            <option class="eventDaySelect" value="17">17</option>
+            <option class="eventDaySelect" value="18">18</option>
+            <option class="eventDaySelect" value="19">19</option>
+            <option class="eventDaySelect" value="20">20</option>
+            <option class="eventDaySelect" value="21">21</option>
+            <option class="eventDaySelect" value="22">22</option>
+            <option class="eventDaySelect" value="23">23</option>
+            <option class="eventDaySelect" value="24">24</option>
+            <option class="eventDaySelect" value="25">25</option>
+            <option class="eventDaySelect" value="26">26</option>
+            <option class="eventDaySelect" value="27">27</option>
+            <option class="eventDaySelect" value="28">28</option>
+            <option class="eventDaySelect" value="29">29</option>
+            <option class="eventDaySelect" value="30">30</option>
+            <option class="eventDaySelect" value="31">31</option>
+          </select>
+
+          <select id="eventMonth">
+            <option class="eventMonthSelect" value="january">January</option>
+            <option class="eventMonthSelect" value="february">February</option>
+            <option class="eventMonthSelect" value="march">March</option>
+            <option class="eventMonthSelect" value="april">April</option>
+            <option class="eventMonthSelect" value="may">May</option>
+            <option class="eventMonthSelect" value="june">June</option>
+            <option class="eventMonthSelect" value="july">July</option>
+            <option class="eventMonthSelect" value="august">August</option>
+            <option class="eventMonthSelect" value="september">September</option>
+            <option class="eventMonthSelect" value="october">October</option>
+            <option class="eventMonthSelect" value="november">November</option>
+            <option class="eventMonthSelect" value="december">December</option>
+          </select>
+
+          <select id="eventYear">
+            <option class="eventYearSelect" value="2017">2017</option>
+            <option class="eventYearSelect" value="2018">2018</option>
+            <option class="eventYearSelect" value="2019">2019</option>
+            <option class="eventYearSelect" value="2020">2020</option>
+          </select>
+          <br>
+          <br>
+          Priority:
+          <select id="eventPriority">
+            <option class="eventPrioritySelect" value="low">Low</option>
+            <option class="eventPrioritySelect" value="medium">Medium</option>
+            <option class="eventPrioritySelect" value="high">High</option>
+            <option class="eventPrioritySelect" value="critical">Critical (email alert)</option>
+          </select>
+          <br>
+          <div id='critEmailDate' style="display:none">
+            <br>
+            Email date:
+            <select id="emailDay">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+              <option value="11">11</option>
+              <option value="12">12</option>
+              <option value="13">13</option>
+              <option value="14">14</option>
+              <option value="15">15</option>
+              <option value="16">16</option>
+              <option value="17">17</option>
+              <option value="18">18</option>
+              <option value="19">19</option>
+              <option value="20">20</option>
+              <option value="21">21</option>
+              <option value="22">22</option>
+              <option value="23">23</option>
+              <option value="24">24</option>
+              <option value="25">25</option>
+              <option value="26">26</option>
+              <option value="27">27</option>
+              <option value="28">28</option>
+              <option value="29">29</option>
+              <option value="30">30</option>
+              <option value="31">31</option>
+            </select>
+
+            <select id="emailMonth">
+              <option value="january">January</option>
+              <option value="february">February</option>
+              <option value="march">March</option>
+              <option value="april">April</option>
+              <option value="may">May</option>
+              <option value="june">June</option>
+              <option value="july">July</option>
+              <option value="august">August</option>
+              <option value="september">September</option>
+              <option value="october">October</option>
+              <option value="november">November</option>
+              <option value="december">December</option>
+            </select>
+
+            <select id="emailYear">
+              <option value="2017">2017</option>
+              <option value="2018">2018</option>
+              <option value="2019">2019</option>
+              <option value="2020">2020</option>
+            </select>
+            <br>
+          </div>
+          <br>
+          <input id="eventInfo" type="text" placeholder="other information"/>
+          <br>
+          <br>   
+          <div style='text-align:center'> 
+            <button id="submitEventButton">
+              Submit
+            </button>
+          </div>
+          </div>
+          <br>
+          <br>
+          <div style="border: 1px solid black">
+            <b>MY CALENDARS</b>
+            <br>
+            <div id='moreSchedulesListing' style="overflow:scroll; height:100px">
+              have list of calendars this user can access here and use a check box system to display them on the big calendar box on the left
+              <br>
+              <br>
+              <h1>PROOF OF CONCEPT</h1>
+              <br>
+              proof of concept that this box with more schedules (to be selected using radio buttons or even check boxes if I somehow get it to work) is able to scroll to make more space for schedules. 
+              <br>
+              <br>
+              Scrolling is because I don't like demented shaped pages. There is still spare room because the priority dropdown could expand the height of this thing.
+
+            </div>
+          </div>
+          <br>
+          <br>
+          <div id='displayOptions'style="border: 1px solid black">
+            <div>
+              <b>SCHEDULE DISPLAY OPTIONS</b>
+            </div>
+            <div style='text-align:center'>
+              <br>
+              <button id='displayByDateButton'>
+                Display by Date
+              </button>
+              <br>
+              <button id='displayByPriorityButton'>
+                Display by Priority
+              </button>
+            </div>
+          </div>
+          <br>
+          <br>
+          <div id="homeButtons" style="border: 1px solid black">
+            <div>
+              <b>OTHER OPTIONS</b>
+            </div>
+            <br>
+            <div style='text-align:center'>
+              <button id="makeNewScheduleButton">
+                Add Another Schedule
+              </button>
+              <br>
+              <button id="changePasswordButton">
+                Change My Password
+              </button>
+              <br>
+              <button id="shareScheduleButton">
+                Share My Schedule
+              </button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
