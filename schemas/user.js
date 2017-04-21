@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.createConnection('mongodb://localhost/db');
+mongoose.connect('mongodb://localhost/db');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 var Schedule = require('./schedule');
@@ -9,8 +9,6 @@ var userSchema = new Schema({
   password: { type: String, required: true },
   schedules: Array
 });
-
-var User = mongoose.model('User, userSchema');
 
 userSchema.pre('save', function(next) {
   var user = this;
@@ -105,5 +103,7 @@ userSchema.statics.print = function() {
 }
 
 
+
+var User = mongoose.model('User, userSchema');
 
 module.exports = User;

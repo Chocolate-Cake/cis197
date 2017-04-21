@@ -9,8 +9,6 @@ var eventSchema = new Schema ({
   info: {type: String}
 });
 
-var Event = mongoose.model('Event', eventSchema);
-
 //function that adds a new event 
 //cb should take a result
 eventSchema.statics.addEvent = function(owner, schedule, eventName, date, priority, info, cb) {
@@ -43,5 +41,6 @@ eventSchema.statics.print = function() {
 }
 
 
+var Event = mongoose.model('Event', eventSchema);
 
 module.exports = Event;

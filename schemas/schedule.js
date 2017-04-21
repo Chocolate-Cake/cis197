@@ -9,8 +9,6 @@ var scheduleSchema = new Schema ({
   events: { type: Array }
 });
 
-var Schedule = mongoose.model('Schedule', scheduleSchema);
-
 //function that returns a new schedule, given a name and owner name
 //or undefined if a schedule of that name already exists
 //callback should take result
@@ -59,12 +57,11 @@ scheduleSchema.methods.deleteEvent = function(owner, schedule, eventName, cb) {
   });
 }
 
-
 //function that prints on start up to show it works
 scheduleSchema.statics.print = function () {
   console.log('successfully required schedule');
 }
 
-
+var Schedule = mongoose.model('Schedule', scheduleSchema);
 
 module.exports = Schedule;

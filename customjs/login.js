@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  /*
   var $loginButton = $('#loginButton');
   $loginButton.click(function() {
     console.log('clicked the login button');
@@ -17,6 +16,5 @@ $(document).ready(function() {
   	console.log(newUsername + ', ' + newPassword);
   	//TODO store somewhere?
   });
-*/
 });
 
