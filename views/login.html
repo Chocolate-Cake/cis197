@@ -4,15 +4,16 @@
     <h1>Schedule App Portal</h1>
   </head>
   <body style="text-align: center">
-    <input id='loginBox' type='text' placeholder='username'/>
+    <input name='loginBox' type='text' placeholder='username'/>
     <br>
     <br>
-    <input id='passwordBox' type='password' placeholder='password'/>
+    <input name='passwordBox' type='password' placeholder='password'/>
     <br>
     <br>
     <button id='loginButton'>Login</button>
     <button id='registerButton'>Register</button>
-    <div style={'display: none'}id='loginresponse'></div>
-    <script src='http://localhost:3000/customjs/login.js'></script>
+    <div style={'display: none'} id='loginresponse'></div>
   </body>
+  <script src='/js/jquery-1.11.3.min.js'></script>
+  <script src='/js/login.js'></script>
 </html>

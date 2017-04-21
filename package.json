@@ -9,13 +9,13 @@
   "author": "yimeng su",
   "license": "ISC",
   "dependencies": {
-    "eslint": "^2.3.0",
-    "express": "^4.13.3",
-    "mongodb": "^2.2.25",
-    "mongoose": "^4.1.11",
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
     "cookie-session": "^2.0.0-beta.1",
-    "ejs": "^2.5.6"
+    "ejs": "^2.5.6",
+    "eslint": "^2.3.0",
+    "express": "^4.13.3",
+    "mongodb": "^2.2.25",
+    "mongoose": "^4.9.5"
   }
 }

@@ -1,6 +1,0 @@
-- have way to check for leap years for validity of event details
-- pass new events into database
-	- attach to a calendar
-	- attach calendar to set of users
-- retrieve events from database and show them
-- pass new users into database
