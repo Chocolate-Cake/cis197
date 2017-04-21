@@ -1,9 +1,15 @@
-// CIS 197 - final
+//CIS 197 - final
 var express = require('express');
 var app = express();
 var cookieSession = require('cookie-session');
 var bodyParser = require('body-parser');
 
+//database
+var User = require('./db/user');
+var Schedule = require('./db/schedule');
+var Event = require('./db/event');
+
+//other setup stuff
 app.engine('html', require('ejs').__express);
 app.set('view engine', 'html');
 app.use(express.static('public'));
@@ -14,6 +20,7 @@ app.use(cookieSession({
 
 app.use(bodyParser.urlencoded({extended: false}));
 
+//PAGES BEGIN
 app.get('/', function (req, res) {
   res.redirect('/login');
 });
@@ -24,8 +31,8 @@ app.get('/login', function (req, res) {
 });
 
 app.post('/login', function(req, res) {
-});
 
+});
 
 
 
