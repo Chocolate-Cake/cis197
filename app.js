@@ -32,6 +32,10 @@ app.get('/', function (req, res) {
 });
 
 //LOGIN.HTML----------------------------------------
+/*
+links to register
+redirects to home, error
+*/
 app.get('/login', function (req, res) {
   res.render('login');
 });
@@ -45,7 +49,7 @@ app.post('/login', function(req, res) {
 
   User.checkIfLegit(username, password, function(err, isRight) {
     if (err) {
-      res.send('Error! ' + err);
+      res.redirect('/error');
     } else {
       if (isRight) {
         req.session.username = username;
@@ -58,6 +62,10 @@ app.post('/login', function(req, res) {
 });
 
 //REGISTER.HTML-------------------------------------
+/*
+links to login
+redirects to error, home
+*/
 app.get('/register', function (req, res) {
   res.render('register');
 });
@@ -71,25 +79,39 @@ app.post('/register', function (req, res) {
 
   User.addUser(req.body.usernameBox, req.body.passwordBox, function(err) {
     if (err) {
-      res.send('error' + err);
+      res.redirect('/error');
     }
-    else res.send('new user registered with username ' + req.body.username);
+    else {
+      req.session.username = username;
+      res.redirect('/home');
+    }
   });
-
-  res.redirect('/');
 }); 
 
 //HOME.HTML-----------------------------------------
+/*
+links to addschedule, addfriend, viewschedule
+*/
 app.get('/home', function (req, res) {
   //TODO populate div with results
-  //TODO check permissions
-  res.render('home');
+  if (!req.session.username || req.session.username === '') {
+    res.redirect('/error');
+  } else {
+    res.render('home', {username: req.session.username });
+  }
 });
 
+
 //VIEWSCHEDULE.HTML--------------------------------
+/*
+redirects to addevent, addeditor, home, addfriend
+*/
 app.get('/viewschedule', function (req, res) {
-  //TODO check permissions
-  res.render('viewschedule');
+  if (!req.session.username || req.session.username === '') {
+    res.redirect('/error');
+  } else {
+    res.render('viewschedule');
+  }
 });
 
 app.post('/viewschedule', function (req, res) {
@@ -97,7 +119,7 @@ app.post('/viewschedule', function (req, res) {
   switch (result) {
     case 'addEvent':
       console.log("result was add event");
-      res.redirect('addevent');
+      res.redirect('/addevent');
     break;
     case 'changeDisplay':
       console.log('result was change display');
@@ -122,9 +144,15 @@ app.post('/viewschedule', function (req, res) {
 
 
 //ADDEDITOR.HTML-----------------------------------
+/*
+redirects to home
+*/
 app.get('/addeditor', function (res, req) {
-  //TODO check permissions
-  res.render('addeditor');
+  if (!req.session.username || req.session.username === '') {
+    res.redirect('/error');
+  } else {
+    res.render('addeditor');
+  }
 });
 
 app.post('/addeditor', function (res, req) {
@@ -132,9 +160,15 @@ app.post('/addeditor', function (res, req) {
 });
 
 //ADDEVENT.HTML------------------------------------
+/*
+redirects to home
+*/
 app.get('/addevent', function (req, res) {
-  //TODO check permissions
-  res.render('addevent');
+  if (!req.session.username || req.session.username === '') {
+    res.redirect('/error');
+  } else {
+    res.render('addevent');
+  }
 });
 
 app.post('/addevent', function (res, req) {
@@ -142,9 +176,15 @@ app.post('/addevent', function (res, req) {
 });
 
 //ADDFRIEND.HTML-----------------------------------
+/*
+redirects to home
+*/
 app.get('/addfriend', function (req, res) {
-  //TODO check permissions
-  res.render('addfriend');
+  if (!req.session.username || req.session.username === '') {
+    res.redirect('/error');
+  } else {
+    res.render('addfriend');
+  }
 });
 
 app.post('/addfriend', function (req, res) {
@@ -152,9 +192,15 @@ app.post('/addfriend', function (req, res) {
 })
 
 //ADDSCHEDULE.HTML---------------------------------
+/*
+redirects to home
+*/
 app.get('/addschedule', function (req, res) {
-  //TODO check permissions
-  res.render('addschedule');
+  if (!req.session.username || req.session.username === '') {
+    res.redirect('/error');
+  } else {
+    res.render('addschedule');
+  }
 })
 
 app.post('/addschedule', function (req, res) {

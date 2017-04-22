@@ -62,25 +62,8 @@ userSchema.methods.addSchedule = function(schedulename, cb) {
   });
 }
 
-//function that adds a new Event to a given user's given schedule
-userSchema.methods.addEvent = function(owner, schedule, eventName, date, priority, info, cb) {
-  Schedule.find({name: schedule}, function (error, result) {
-    if (error) {
-      console.log(error);
-      cb(error);
-    } else if (result) {
-      result.addEvent(eventName, date, priority, info, function (result, error) {
-        if (error) {
-          console.log(error);
-          cb(error);
-        } else if (!result) {
-          cb(new Error('user add event failed with no error'));
-        } 
-      });
-    } else {
-      console.log('user add event failed with no error');
-    }
-  });
+userSchema.methods.deleteSchedule = function(schedulename, cb) {
+  //TODO
 }
 
 //function that determines if this user already exists
@@ -94,11 +77,6 @@ userSchema.statics.containsUser = function(name, callback) {
       callback(null, result.length > 0);
     }
   });
-}
-
-//print on startup to see that this is working
-userSchema.statics.print = function() {
-  console.log('successfully required users');
 }
 
 module.exports = mongoose.model('User', userSchema);

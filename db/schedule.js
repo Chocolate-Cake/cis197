@@ -57,9 +57,4 @@ scheduleSchema.methods.deleteEvent = function(owner, schedule, eventName, cb) {
   });
 }
 
-//function that prints on start up to show it works
-scheduleSchema.statics.print = function () {
-  console.log('successfully required schedule');
-}
-
 module.exports = mongoose.model('Schedule', scheduleSchema);

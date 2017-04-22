@@ -2,31 +2,31 @@
 <html>
   <head>
     <center>
-    <h1 id='welcomeUser'>Welcome to the schedule app, USERNAME<h1>
+    <h1>Welcome to the schedule app, <%= username %><h1>
     </center>
   </head>
   <body>
     <table style='width:100%; height:500px; padding:20px'>
       <tr style='height:30px; text-align:center'>
         <td style='width:50%; border: 1px solid black'>
-          <a href='/addschedule'>Add Schedule</a>
+          <b>My Schedules</b>
         </td>
         <td style='width:50%; border: 1px solid black'>
-          <a href='/addfriend'>Add Friend</a>
-        </td>
-      </tr>
-      <tr style='height:30px; text-align:center'>
-        <td style='width:50%; border: 1px solid black'>
-          <a href='/schedule'>My Schedules</a>
-        </td>
-        <td style='width:50%; border: 1px solid black'>
-          <a href='/friends'>My Friends</a>
+          <b>My Friends</b>
         </td>
       </tr>
       <tr>
         <td id = 'populateScheulesList' style='width:50%; border: 1px solid black; overflow:scroll'>
         </td>
         <td id = 'populateFriendsList' style='width:50%; border: 1px solid black; overflow:scroll'>
+        </td>
+      </tr>
+      <tr style='height:30px; text-align:center'>
+        <td style='width:50%; border: 1px solid black'>
+          <a href='/addschedule'>Add Schedule</a>
+        </td>
+        <td style='width:50%; border: 1px solid black'>
+          <a href='/addfriend'>Add Friend</a>
         </td>
       </tr>
     </table>
