@@ -45,21 +45,19 @@ app.post('/login', function(req, res) {
 
   console.log(username);
   console.log(password);
-  /*
+
   User.checkIfLegit(username, password, function(err, isRight) {
     if (err) {
       res.send('Error! ' + err);
     } else {
       if (isRight) {
         req.session.username = username;
-        res.redirect('/protected');
+        res.redirect('/home');
       } else {
         res.send('wrong password');
       }
     }
   });
-  */
-  res.redirect('/');
 });
 
 //REGISTER.HTML-------------------------------------
@@ -84,11 +82,13 @@ app.post('/register', function (req, res) {
 
 //HOME.HTML-----------------------------------------
 app.get('/home', function (req, res) {
+  //TODO check permissions
   res.render('home');
 });
 
 //SCHEDULES.HTML------------------------------------
 app.get('/schedules', function (req, res) {
+  //TODO check permissions
   res.render('schedules');
 });
 
@@ -103,10 +103,31 @@ app.get('/viewschedule', function (req, res) {
 });
 
 app.post('/viewschedule', function (req, res) {
-  var result = getOption();
-  console.log('this should run');
-  console.log(result);
-  res.redirect('/viewschedule');
+  var result = req.body.userOption;
+  switch (result) {
+    case 'addEvent':
+      console.log("result was add event");
+      res.redirect('addevent');
+    break;
+    case 'changeDisplay':
+      console.log('result was change display');
+      //TODO call function
+    break;
+    case 'addEditor':
+      console.log('result was add editor');
+      res.redirect('/addeditor');
+    break;
+    case 'switchSchedule':
+      res.redirect('/schedules');
+    break;
+    case 'addFriend':
+      console.log('result was add friend');
+      res.redirect('/addfriend');
+    break;
+    default:
+      console.log('do nothing');
+  }
+  
 });
 
 

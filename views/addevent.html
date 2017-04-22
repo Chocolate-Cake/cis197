@@ -1,11 +1,30 @@
 <!DOCTYPE html>
 <html>
-	<div id='scheduleTitleBox'>
-		SCHEDULE NAME GOES HERE
-	</div>
-	<div id='scheduleContentBox' style='overflow:scroll; border: 1px solid black; height:700px'>
-		
-
-		
-	</div>
+  <head>
+    <h1>Add Event</h1>
+  </head>
+  <body style='text-align:center'>
+    <form method='post'>
+      Event Name:
+      <br>
+      <input type='text' name='eventName' placeholder='Event name'>
+      <br>
+      <br>
+      Event Date:
+      <br>
+      <input type='date' name='eventDate'>
+      <br>
+      <br>
+      Event Priority (1 = low, 3 = high)
+      <br>
+      <input type='number' name='eventPriority'>
+      <br>
+      <br>
+      Event Info
+      <br>
+      <input type='text' name='eventInfo'>
+      <br>
+      <input type='submit'>
+    </form>
+  </body>
 </html>

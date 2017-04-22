@@ -3,4 +3,6 @@ var getOption = function () {
 	return $('#userOption').val();
 }
 
-module.export = getOption;
+module.exports = {
+	getOption
+};

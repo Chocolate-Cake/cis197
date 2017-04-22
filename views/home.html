@@ -7,22 +7,26 @@
   </head>
   <body>
     <table style='width:100%; height:500px; padding:20px'>
-      <tr style='height:30px'>
+      <tr style='height:30px; text-align:center'>
         <td style='width:50%; border: 1px solid black'>
-          <center>
-            <a href='/schedule'>My Schedules</a>
-          </center>
+          <a href='/addschedule'>Add Schedule</a>
         </td>
         <td style='width:50%; border: 1px solid black'>
-          <center>
-            <a href='/friends'>My Friends</a>
-          </center>
+          <a href='/addfriend'>Add Friend</a>
+        </td>
+      </tr>
+      <tr style='height:30px; text-align:center'>
+        <td style='width:50%; border: 1px solid black'>
+          <a href='/schedule'>My Schedules</a>
+        </td>
+        <td style='width:50%; border: 1px solid black'>
+          <a href='/friends'>My Friends</a>
         </td>
       </tr>
       <tr>
-        <td style='width:50%; border: 1px solid black; overflow:scroll'>
+        <td id = 'populateScheulesList' style='width:50%; border: 1px solid black; overflow:scroll'>
         </td>
-        <td style='width:50%; border: 1px solid black; overflow:scroll'>
+        <td id = 'populateFriendsList' style='width:50%; border: 1px solid black; overflow:scroll'>
         </td>
       </tr>
     </table>
