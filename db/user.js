@@ -6,8 +6,7 @@ var Schedule = require('./schedule');
 
 var userSchema = new Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  schedules: Array
+  password: { type: String, required: true }
 });
 
 userSchema.pre('save', function(next) {

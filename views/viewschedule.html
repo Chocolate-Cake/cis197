@@ -7,14 +7,15 @@
   </head>
   <body>
     <table style="border: 1px solid black;width:100%">
-      <tr style='background-color:yellow'>
+      <tr style='background-color:green'>
         <td style="border: 1px solid black">
-          <div id='scheduleName' style='width:70%; display: inline-block'>
-          SCHEDULE NAME HERE
+          <div id='scheduleName' style='width:70%; display: inline-block; font-size:200%; font-family: "Book Antiqua", Palatino, serif;'>
+          Schedule Name Here
           </div>
           <div style='display: inline-block; float:right'>
           <form method='post'>
-            <select id='userHomeOption'>
+            <select id='userOption'>
+              <option value="" disabled selected>Select Action</option>
               <option value='addEvent'>Add New Event to Schedule</option>
               <option value='changeDisplay'>Change Schedule Display Option</option>
               <option value='addEditor'>Add Viewer to Scedule</option>
@@ -29,7 +30,7 @@
       </tr>
       <tr>
         <td>
-          <div id="scheduleBox" style="overflow:scroll; height:670px; text-align: center">
+          <div id="scheduleBox" style="overflow:scroll; height:650px; text-align: center">
             text
             <br>
             text
@@ -150,4 +151,6 @@
       </tr>
     </table>
   </body>
+  <script src='/js/jquery-1.11.3.min.js'></script>
+  <script src='/js/options.js'></script>
 </html>
