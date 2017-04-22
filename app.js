@@ -156,7 +156,24 @@ app.get('/addeditor', function (res, req) {
 });
 
 app.post('/addeditor', function (res, req) {
-  //TODO Schedule.add editor
+  var friend = res.body.friend;
+  var schedulename = res.body.schedule;
+  //check schedule doesn't already exist
+  Schedule.findOne({name: schedulename, owner: req.session.username}, 
+    function (err, result) {
+      if (!result) {
+        res.redirect('/error');
+      } else {
+        result.addEditor(req.body.friend, function (error) {
+          if (error) {
+            res.redirect('/error')
+          } 
+          else {
+            res.redirect('/home');
+          }
+      });
+    }
+  });
 });
 
 //ADDEVENT.HTML------------------------------------
@@ -172,7 +189,27 @@ app.get('/addevent', function (req, res) {
 });
 
 app.post('/addevent', function (res, req) {
-  //TODO schedule.add event
+  var schedule = req.body.eventSchedule;
+  var eventName = req.body.eventName;
+  var eventDate = req.body.eventDate;
+  var eventPriority = req.body.eventPriority;
+  var eventInfo = req.body.eventInfo;
+
+  Schedule.findOne({name: schedulename, owner: req.session.username}, 
+    function (err, result) {
+      if (!result) {
+        res.redirect('/error');
+      } else {
+        result.addEvent(eventName, eventDate, eventPriority, eventInfo, function (error) {
+          if (error) {
+            res.redirect('/error')
+          } 
+          else {
+            res.redirect('/home');
+          }
+      });
+    }
+  });
 });
 
 //ADDFRIEND.HTML-----------------------------------
@@ -188,7 +225,20 @@ app.get('/addfriend', function (req, res) {
 });
 
 app.post('/addfriend', function (req, res) {
-  //TODO user.add friend
+  var friendName = req.body.friendUsername;
+  User.findOne({name: req.session.username}, function (err, result) {
+    if (!result) {
+      res.redirect('/error');
+    } else {
+      result.addFriend(friendName, function (error, result) {
+        if (!result) {
+          res.redirect('/error');
+        } else {
+          res.redirect('/home');
+        }
+      });
+    }
+  });
 })
 
 //ADDSCHEDULE.HTML---------------------------------
@@ -204,7 +254,21 @@ app.get('/addschedule', function (req, res) {
 })
 
 app.post('/addschedule', function (req, res) {
-  //TODO user.add schedule
+  var scheduleName = req.body.scheduleName;
+
+  User.findOne({name: req.session.username}, function (err, result) {
+    if (!result) {
+      res.redirect('/error');
+    } else {
+      result.addSchedule(scheduleName, function (error) {
+        if (error) {
+          res.redirect('/error');
+        } else {
+          res.redirect('/home');
+        }
+      });
+    }
+  });  
 });
 
 //ERROR.HTML--------------------------------------

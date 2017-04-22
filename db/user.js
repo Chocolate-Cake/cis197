@@ -9,6 +9,7 @@ var userSchema = new Schema({
   password: { type: String, required: true }
 });
 
+//salt for securing the password
 userSchema.pre('save', function(next) {
   var user = this;
   if (!user.isModified('password')) return next();
@@ -21,8 +22,6 @@ userSchema.pre('save', function(next) {
     });
   });
 });
-
-
 
 //function that makes a new user and saves it somewhere
 //TODO figure out how/why this works
@@ -49,32 +48,62 @@ userSchema.statics.checkIfLegit = function(username, password, cb) {
 
 //function that adds a new Schedule to the user's array of schedules
 userSchema.methods.addSchedule = function(schedulename, cb) {
-	Schedule.addSchedule(schedulename, this.username, function (result, err) {
-    if (err) {
-      console.log(err);
-      cb(err);
+	//make new schedule
+  var newSchedule = new Schedule({
+    name: schedulename,
+    owner: this.username
+  });
+
+  //find all schedules with these same attributes
+  Schedule.find({name: schedulename, owner: this.username}, function (error) {
+    if (error) {
+      cb(error);
     }
-    else if (result) {
-      this.schedules.push(result);
-    } else {
-      console.log('user add schedule failed with no error');
+    //if already exists
+    if (result.length > 0) {
+      throw new Error('schedule already exists');
+    } 
+    //if everything is fine
+    else {
+      this.schedules.push(newSchedule);
+      this.save(cb);
     }
   });
 }
+
+userSchema.methods.addFriend = function(friendname, cb) {
+  
+  var has = this.containsUser(friendname, function (error, result) {
+    //if true that friend is a user
+    if (result) {
+      var arr = this.friends;
+      for (var i = 0; i < friends.length; i++) {
+        if (arr[i] === friendname) {
+          cb (new Error());
+        } 
+      }
+      this.friends.push(friendname);
+      this.save(cb);
+    } else {
+      cb(new Error('person doesnt exist'));
+    }
+  });
+}
+
 
 userSchema.methods.deleteSchedule = function(schedulename, cb) {
   //TODO
 }
 
 //function that determines if this user already exists
-userSchema.statics.containsUser = function(name, callback) {
+userSchema.statics.containsUser = function(name, cb) {
   console.log('checking if user collection contains ' + name);
   User.find({name: name}, function (error, result) {
     if (error) {
-      callback(error);
+      cb(error);
     } else {
       //TODO what is this and why does it work??
-      callback(null, result.length > 0);
+      cb(null, result.length > 0);
     }
   });
 }
