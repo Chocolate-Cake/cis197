@@ -71,13 +71,13 @@ app.get('/register', function (req, res) {
 });
 
 app.post('/register', function (req, res) {
-  var username = req.body.usernameBox;
-  var password = req.body.passwordBox;
+  var username = req.body.regNameBox;
+  var password = req.body.regPassBox;
 
-  console.log(username);
-  console.log(password);
+  console.log('username ' + username);
+  console.log('password ' + password);
 
-  User.addUser(req.body.usernameBox, req.body.passwordBox, function(err) {
+  User.addUser(username, password, function(err) {
     if (err) {
       res.redirect('/error');
     }
