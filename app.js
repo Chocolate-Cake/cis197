@@ -49,7 +49,7 @@ app.post('/login', function(req, res) {
 
   User.checkIfLegit(username, password, function(err, isRight) {
     if (err) {
-      res.redirect('/error');
+      res.send('failed to check if user legit');
     } else {
       if (isRight) {
         req.session.username = username;
@@ -79,7 +79,7 @@ app.post('/register', function (req, res) {
 
   User.addUser(username, password, function(err) {
     if (err) {
-      res.redirect('/error');
+      res.send('failed to register new user');
     }
     else {
       req.session.username = username;
@@ -88,16 +88,35 @@ app.post('/register', function (req, res) {
   });
 }); 
 
+//LOGOUT.HTML---------------------------------------
+app.get('/logout', function (req, res) {
+  req.session.username = '';
+  res.render('logout');
+});
+
+
 //HOME.HTML-----------------------------------------
 /*
 links to addschedule, addfriend, viewschedule
 */
 app.get('/home', function (req, res) {
-  //TODO populate div with results
+  //TODO populate div with results CURRENTLY DOESN'T WORK
+
   if (!req.session.username || req.session.username === '') {
-    res.redirect('/error');
+    res.send('failed to render home');
   } else {
-    res.render('home', {username: req.session.username });
+    console.log('schedules ' + schedules);    
+    var schedules;
+    Schedule.find({owner: req.session.username}, function (error, result) {
+    console.log('did try to find schedules');
+    //if doesn't exist
+    if (!result) {
+      res.send('failed to find schedules of this owner');
+    } else {
+      schedules = result;
+      res.render('home', {username: req.session.username, schedulesArr: schedules });
+    }
+  });
   }
 });
 
@@ -107,8 +126,9 @@ app.get('/home', function (req, res) {
 redirects to addevent, addeditor, home, addfriend
 */
 app.get('/viewschedule', function (req, res) {
+  //TODO CURRENT CANNOT TEST
   if (!req.session.username || req.session.username === '') {
-    res.redirect('/error');
+    res.send('failed to render viewschedule');
   } else {
     res.render('viewschedule');
   }
@@ -123,7 +143,7 @@ app.post('/viewschedule', function (req, res) {
     break;
     case 'changeDisplay':
       console.log('result was change display');
-      //TODO call function
+      //TODO call function CURRENT DOESN'T EXIST
     break;
     case 'addEditor':
       console.log('result was add editor');
@@ -149,7 +169,7 @@ redirects to home
 */
 app.get('/addeditor', function (res, req) {
   if (!req.session.username || req.session.username === '') {
-    res.redirect('/error');
+    res.send('failed to render add editor');
   } else {
     res.render('addeditor');
   }
@@ -159,16 +179,17 @@ app.post('/addeditor', function (res, req) {
   var friend = res.body.friend;
   var schedulename = res.body.schedule;
   //check schedule doesn't already exist
-  Schedule.findOne({name: schedulename, owner: req.session.username}, 
+  Schedule.find({name: schedulename, owner: req.session.username}, 
     function (err, result) {
       if (!result) {
-        res.redirect('/error');
+        res.send('failed to add editor because no such schedule');
       } else {
-        result.addEditor(req.body.friend, function (error) {
+        result[0].addEditor(req.body.friend, function (error) {
           if (error) {
-            res.redirect('/error')
+            res.send('failed to add editor because function didnt work');
           } 
           else {
+            console.log('did add editor');
             res.redirect('/home');
           }
       });
@@ -182,7 +203,7 @@ redirects to home
 */
 app.get('/addevent', function (req, res) {
   if (!req.session.username || req.session.username === '') {
-    res.redirect('/error');
+    res.send('failed to render add event');
   } else {
     res.render('addevent');
   }
@@ -198,13 +219,14 @@ app.post('/addevent', function (res, req) {
   Schedule.findOne({name: schedulename, owner: req.session.username}, 
     function (err, result) {
       if (!result) {
-        res.redirect('/error');
+        res.send('failed to add event because no such schedule');
       } else {
         result.addEvent(eventName, eventDate, eventPriority, eventInfo, function (error) {
           if (error) {
-            res.redirect('/error')
+            res.send('failed to add event because function didnt work');
           } 
           else {
+            console.log('did add event');
             res.redirect('/home');
           }
       });
@@ -218,7 +240,7 @@ redirects to home
 */
 app.get('/addfriend', function (req, res) {
   if (!req.session.username || req.session.username === '') {
-    res.redirect('/error');
+    res.send('failed to render add friend');
   } else {
     res.render('addfriend');
   }
@@ -226,14 +248,19 @@ app.get('/addfriend', function (req, res) {
 
 app.post('/addfriend', function (req, res) {
   var friendName = req.body.friendUsername;
-  User.findOne({name: req.session.username}, function (err, result) {
+  
+  console.log('all users: ' + User.find());
+
+  User.find({username: req.session.username}, function (err, result) {
     if (!result) {
-      res.redirect('/error');
+      res.send('failed to add friend because cant find current user');
     } else {
+      console.log('found result: ' + result);
       result.addFriend(friendName, function (error, result) {
         if (!result) {
-          res.redirect('/error');
+          res.send('failed to add friend because function didnt work');
         } else {
+          console.log('did add friend');
           res.redirect('/home');
         }
       });
@@ -247,7 +274,7 @@ redirects to home
 */
 app.get('/addschedule', function (req, res) {
   if (!req.session.username || req.session.username === '') {
-    res.redirect('/error');
+    res.send('failed to render add schedule');
   } else {
     res.render('addschedule');
   }
@@ -256,14 +283,17 @@ app.get('/addschedule', function (req, res) {
 app.post('/addschedule', function (req, res) {
   var scheduleName = req.body.scheduleName;
 
-  User.findOne({name: req.session.username}, function (err, result) {
+  User.find({username: req.session.username}, function (err, result) {
+    //get this current user as object
     if (!result) {
-      res.redirect('/error');
+      res.send('failed to add schedule because no such user');
     } else {
-      result.addSchedule(scheduleName, function (error) {
+      //add schedule to current user
+      result[0].addSchedule(scheduleName, function (error) {
         if (error) {
-          res.redirect('/error');
+          res.send('failed to add schedule because function didnt work');
         } else {
+          console.log('did add schedule');
           res.redirect('/home');
         }
       });
@@ -275,11 +305,6 @@ app.post('/addschedule', function (req, res) {
 app.get('/error', function (req, res) {
   res.render('error');
 })
-
-
-
-
-
 
 
 app.set('port', process.env.PORT || 3000);

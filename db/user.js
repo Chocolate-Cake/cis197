@@ -9,6 +9,9 @@ var userSchema = new Schema({
   password: { type: String, required: true }
 });
 
+
+//var User = mongoose.model('User', userSchema);
+
 //salt for securing the password
 userSchema.pre('save', function(next) {
   var user = this;
@@ -55,7 +58,7 @@ userSchema.methods.addSchedule = function(schedulename, cb) {
   });
 
   //find all schedules with these same attributes
-  Schedule.find({name: schedulename, owner: this.username}, function (error) {
+  Schedule.find({name: schedulename, owner: this.username}, function (error, result) {
     if (error) {
       cb(error);
     }
@@ -72,11 +75,12 @@ userSchema.methods.addSchedule = function(schedulename, cb) {
 }
 
 userSchema.methods.addFriend = function(friendname, cb) {
-  
-  var has = this.containsUser(friendname, function (error, result) {
-    //if true that friend is a user
+  //TODO this won't work
+  userSchema.find({username: friendname}, function (error, result) {
+    //if true that friend is an existing user
     if (result) {
       var arr = this.friends;
+      //if friend already is friended, throw error
       for (var i = 0; i < friends.length; i++) {
         if (arr[i] === friendname) {
           cb (new Error());
@@ -85,7 +89,7 @@ userSchema.methods.addFriend = function(friendname, cb) {
       this.friends.push(friendname);
       this.save(cb);
     } else {
-      cb(new Error('person doesnt exist'));
+      cb(new Error('person does not exist'));
     }
   });
 }
@@ -98,7 +102,7 @@ userSchema.methods.deleteSchedule = function(schedulename, cb) {
 //function that determines if this user already exists
 userSchema.statics.containsUser = function(name, cb) {
   console.log('checking if user collection contains ' + name);
-  User.find({name: name}, function (error, result) {
+  User.find({username: name}, function (error, result) {
     if (error) {
       cb(error);
     } else {
