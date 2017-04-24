@@ -6,11 +6,11 @@ var Schedule = require('./schedule');
 
 var userSchema = new Schema({
   username: { type: String, required: true, unique: true },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  schedules: {type: Array},
+  shared: {type: Array},
+  friends: {type: Array}
 });
-
-
-//var User = mongoose.model('User', userSchema);
 
 //salt for securing the password
 userSchema.pre('save', function(next) {
@@ -26,14 +26,22 @@ userSchema.pre('save', function(next) {
   });
 });
 
-//function that makes a new user and saves it somewhere
-//TODO figure out how/why this works
 userSchema.statics.addUser = function(username, password, cb) {
   var newUser = new this({ 
     username: username, 
     password: password
   });
   newUser.save(cb);
+}
+
+userSchema.statics.deleteUser = function(username, cb) {
+  User.remove({username: username}, function (error) {
+    if (error) {
+      cb(error);
+    } else {
+      cb(null);
+    }
+  });
 }
 
 //function that manages user login
@@ -50,53 +58,114 @@ userSchema.statics.checkIfLegit = function(username, password, cb) {
 }
 
 //function that adds a new Schedule to the user's array of schedules
-userSchema.methods.addSchedule = function(schedulename, cb) {
+userSchema.statics.addSchedule = function(username, schedulename, cb) {
 	//make new schedule
   var newSchedule = new Schedule({
     name: schedulename,
     owner: this.username
   });
 
-  //find all schedules with these same attributes
-  Schedule.find({name: schedulename, owner: this.username}, function (error, result) {
-    if (error) {
+  this.findOne({username: username}, function (error, myself) {
+    var valid = true;
+    if (myself) {
+      for (var i = 0; i < myself.schedules.length; i++) {
+        if (myself.schedules[i].name === schedulename) {
+          console.log('schedule already exists');
+          valid = false;
+        }
+      }
+
+      if (valid) {
+        console.log('added new schedule');
+        myself.schedules.push(newSchedule);
+      }
+      myself.save(cb);
+    } else {
       cb(error);
     }
-    //if already exists
-    if (result.length > 0) {
-      throw new Error('schedule already exists');
-    } 
-    //if everything is fine
-    else {
-      this.schedules.push(newSchedule);
-      this.save(cb);
-    }
   });
 }
 
-userSchema.methods.addFriend = function(friendname, cb) {
-  //TODO this won't work
-  userSchema.find({username: friendname}, function (error, result) {
-    //if true that friend is an existing user
-    if (result) {
-      var arr = this.friends;
-      //if friend already is friended, throw error
-      for (var i = 0; i < friends.length; i++) {
-        if (arr[i] === friendname) {
-          cb (new Error());
-        } 
+userSchema.statics.deleteSchedule = function(username, schedulename, cb) {
+  this.findOne({username: username}, function (error, myself) {
+    if (myself) {
+      for (var i = 0; i < myself.schedules.length; i++) {
+        if (myself.schedules[i].name === schedulename) {
+          myself.schedules.splice(i, 1);
+        }
       }
-      this.friends.push(friendname);
-      this.save(cb);
+      myself.save(cb);
     } else {
-      cb(new Error('person does not exist'));
+      cb(error);
     }
   });
 }
 
+//function that adds a friend to the current user, so now you have the
+//option of sharing schedules with this person
+userSchema.statics.addFriend = function(username, friendname, cb) {
+  var top = this;
+  this.findOne({username: friendname}, function (error, friend) {
+    //if friend is an existing user
+    if (friend) {
+      console.log('friend exists');
+      top.findOne({username: username}, function (err, myself) {
+        //find self and push friend
+        //TODO check no double push
+        if (myself) {
+          console.log('i exist');
+          console.log(myself);
+          console.log('array: ' + myself.friends);
+          console.log('length: ' + myself.friends.length);
+          var valid = true;
 
-userSchema.methods.deleteSchedule = function(schedulename, cb) {
-  //TODO
+          for (var i = 0; i < myself.friends.length; i++) {
+            if (myself.friends[i] === friendname) {
+              console.log('friend already added');
+              valid = false;
+            }
+          }
+
+          if (valid) {
+            console.log('added new friend');
+            myself.friends.push((friend.username + ''));
+          }
+          myself.save(cb);
+
+        } else {
+          cb(err);
+        }
+      });
+    } else {
+      cb(error);
+    }
+  });
+}
+
+//function that deletes a friend and all the shedules shared with this person
+userSchema.statics.deleteFriend = function (username, friendname, cb) {
+  User.findOne({username: friendname}, function (error, friend) {
+    if (friend) {
+      //delete friend my my array
+      User.findOne({username: username}, function (err, myself) {
+        for (var i = 0; i < myself.friends.length; i++) {
+          if (myself.friends[i] === friendname) {
+            myself.friends.splice(i, 1);
+          }
+        }
+      });
+
+      //delete my schedules from friend's shared
+      for (var i = 0; i < friend.shared.length; i++) {
+        if (friend.shared[i].owner === username) {
+          friend.shared.splice(i, 1);
+        }
+      }
+      myself.save(cb);
+    } else {
+      cb(error);
+    }
+  });
 }
 
 //function that determines if this user already exists

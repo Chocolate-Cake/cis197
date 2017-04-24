@@ -105,18 +105,38 @@ app.get('/home', function (req, res) {
   if (!req.session.username || req.session.username === '') {
     res.send('failed to render home');
   } else {
-    console.log('schedules ' + schedules);    
+    console.log('loading schedules ' + schedules);    
     var schedules;
+    var shared;
+    var friends;
+
     Schedule.find({owner: req.session.username}, function (error, result) {
-    console.log('did try to find schedules');
-    //if doesn't exist
-    if (!result) {
-      res.send('failed to find schedules of this owner');
-    } else {
-      schedules = result;
-      res.render('home', {username: req.session.username, schedulesArr: schedules });
-    }
-  });
+      console.log('did try to find schedules');
+      //if doesn't exist
+      if (!result) {
+        res.send('failed to find schedules of this owner');
+      } else {
+        console.log('test'+result);
+        schedules = result;
+      }
+    });
+
+    User.findOne({username: req.session.username}, function (error, result) {
+      if (!result) {
+        res.send('failed to find user for rendering home');
+      } else {
+        console.log('test'+result);
+        shared = result.shared;
+        friends = result.friends;
+      }
+    });
+      res.render('home', {
+        username: req.session.username, 
+        arrSchedules: schedules,
+        arrShared: shared,
+        arrFriends: friends
+      });
+    
   }
 });
 
@@ -248,22 +268,12 @@ app.get('/addfriend', function (req, res) {
 
 app.post('/addfriend', function (req, res) {
   var friendName = req.body.friendUsername;
-  
-  console.log('all users: ' + User.find());
-
-  User.find({username: req.session.username}, function (err, result) {
-    if (!result) {
-      res.send('failed to add friend because cant find current user');
+  console.log('friendName');
+  User.addFriend(req.session.username, friendName, function (error) {
+    if (error) {
+      res.send('failed to add new friend');
     } else {
-      console.log('found result: ' + result);
-      result.addFriend(friendName, function (error, result) {
-        if (!result) {
-          res.send('failed to add friend because function didnt work');
-        } else {
-          console.log('did add friend');
-          res.redirect('/home');
-        }
-      });
+      res.redirect('/home');
     }
   });
 })
@@ -283,22 +293,13 @@ app.get('/addschedule', function (req, res) {
 app.post('/addschedule', function (req, res) {
   var scheduleName = req.body.scheduleName;
 
-  User.find({username: req.session.username}, function (err, result) {
-    //get this current user as object
-    if (!result) {
-      res.send('failed to add schedule because no such user');
+  User.addSchedule(req.session.username, scheduleName, function (error) {
+    if (error) {
+      res.send('failed to add new schedule');
     } else {
-      //add schedule to current user
-      result[0].addSchedule(scheduleName, function (error) {
-        if (error) {
-          res.send('failed to add schedule because function didnt work');
-        } else {
-          console.log('did add schedule');
-          res.redirect('/home');
-        }
-      });
+      res.redirect('/home');
     }
-  });  
+  });
 });
 
 //ERROR.HTML--------------------------------------
