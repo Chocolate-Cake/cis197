@@ -107,7 +107,7 @@ app.get('/home', function (req, res) {
       if (!result) {
         res.send('failed to find user for rendering home');
       } else {
-        console.log("this user is " + result);
+        //console.log("this user is " + result);
         var shared = result.shared;
         var friends = result.friends;
         var schedules = result.schedules;
@@ -119,6 +119,61 @@ app.get('/home', function (req, res) {
         });
       }
     });
+  }
+});
+
+app.post('/home', function (req, res) {
+  var type = req.body.clicked;
+  var input = req.body.attr;
+
+  switch(type) {
+    case 'addschedule':
+    if (input != '') {
+      User.addSchedule(req.session.username, input, function (error) {
+        if (error) {
+          console.log('failed to delete schedule');
+        } else {
+          res.redirect('/home');
+        }
+      });
+    }
+    break;
+
+    case 'deleteschedule':
+    if (input != '') {
+      User.deleteSchedule(req.session.username, input, function (error) {
+        if (error) {
+          console.log('failed to add new schedule');
+        } else {
+          res.redirect('/home');
+        }
+      });
+    }
+    break;
+
+    case 'addfriend':
+    if (input !== '') {
+      User.addFriend(req.session.username, input, function (error) {
+        if (error) {
+          console.log('failed to add new friend');
+        } else {
+          res.redirect('/home');
+        }
+      });
+    }
+    break;
+
+    case 'deletefriend':
+    if (input !== '') {
+      User.deleteFriend(req.session.username, input, function (error) {
+        if (error) {
+          console.log('failed to delete friend');
+        } else {
+          res.redirect('/home');
+        }
+      });
+    }
+    break;
   }
 });
 
@@ -181,7 +236,7 @@ app.post('/addeditor', function (res, req) {
   var friend = res.body.friend;
   var schedulename = res.body.schedule;
   var myname = req.session.username + "";
-  console.log('my name is ' + myname);
+  //console.log('my name is ' + myname);
   //check schedule doesn't already exist
   Schedule.find({name: schedulename, owner: myname}, 
     function (err, result) {
@@ -242,6 +297,7 @@ app.post('/addevent', function (res, req) {
 /*
 redirects to home
 */
+/*
 app.get('/addfriend', function (req, res) {
   if (!req.session.username || req.session.username === '') {
     res.send('failed to render add friend');
@@ -261,11 +317,12 @@ app.post('/addfriend', function (req, res) {
     }
   });
 })
-
+*/
 //ADDSCHEDULE.HTML---------------------------------
 /*
 redirects to home
 */
+/*
 app.get('/addschedule', function (req, res) {
   if (!req.session.username || req.session.username === '') {
     res.send('failed to render add schedule');
@@ -285,7 +342,7 @@ app.post('/addschedule', function (req, res) {
     }
   });
 });
-
+*/
 //ERROR.HTML--------------------------------------
 app.get('/error', function (req, res) {
   res.render('error');

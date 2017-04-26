@@ -155,7 +155,6 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
   this.findOne({username: friendname}, function (error, friend) {
     //if friend is an existing user
     if (friend) {
-      console.log('friend exists');
       top.findOne({username: username}, function (err, myself) {
         //find self and push friend
         if (myself) {
@@ -163,7 +162,6 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
 
           for (var i = 0; i < myself.friends.length; i++) {
             if (myself.friends[i] === friendname) {
-              console.log('friend already added');
               valid = false;
             }
           }
@@ -171,6 +169,11 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
           if (valid) {
             console.log('added new friend');
             myself.friends.push((friend.username + ''));
+
+            //share all my schedules with friend
+            for (var i = 0; i < myself.schedules.length; i++) {
+              friend.shared.push(myself.schedules[i]);
+            }
           }
           myself.save(cb);
 
@@ -186,24 +189,38 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
 
 //function that deletes a friend and all the shedules shared with this person
 userSchema.statics.deleteFriend = function (username, friendname, cb) {
-  User.findOne({username: friendname}, function (error, friend) {
+  var top = this;
+
+  this.findOne({username: friendname}, function (error, friend) {
     if (friend) {
-      //delete friend my my array
-      User.findOne({username: username}, function (err, myself) {
-        for (var i = 0; i < myself.friends.length; i++) {
-          if (myself.friends[i] === friendname) {
-            myself.friends.splice(i, 1);
+      //find me and delete friend my my array
+      top.findOne({username: username}, function (err, myself) {
+        if (myself) {
+          for (var i = 0; i < myself.friends.length; i++) {
+            if (myself.friends[i] === friendname) {
+              myself.friends.splice(i, 1);
+            }
+          }
+
+        //get indices of friend's schedules that are mine
+        var arr;
+        for (var i = 0; i < friend.shared.length; i++) {
+          if (friend.shared[i].owner === username) {
+            arr.push(i);
           }
         }
-      });
-
-      //delete my schedules from friend's shared
-      for (var i = 0; i < friend.shared.length; i++) {
-        if (friend.shared[i].owner === username) {
-          friend.shared.splice(i, 1);
+        if (arr) {
+          //delete these schedules
+          for (var i = arr.length - 1; i >= 0; i--) {
+            friend.shared.splice(arr[i], 1);
+          }
         }
-      }
-      myself.save(cb);
+
+        myself.save(cb);
+        } else {
+          cb(err);
+        }
+      });
     } else {
       cb(error);
     }

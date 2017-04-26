@@ -36,7 +36,7 @@
         <td style='border: 1px solid black; overflow:scroll'>
             <div style='width:100%; height:100%; overflow:scroll'>
             <% for(var i = 0; i < arrFriends.length; i++) {%>
-            <div class='friendClickable' id='friend<%= i %>'><%= arrFriends[i] %></div>
+            <div id='friend<%= i %>'><%= arrFriends[i] %></div>
             <% } %>
           <div>
         </td>
@@ -51,7 +51,7 @@
           <a href='/addeditor'>Share My Schedules</a>
         </td>
         <td style='border: 1px solid black'>
-          <input type='text' id='homeScheduleInput'/>
+          <input type='text' id='homeFriendInput'/>
           <button id='homeFriendAdd'>Add Friend</button>
           <button id='homeFriendDelete'>Delete Friend</button>
         </td>
@@ -60,5 +60,7 @@
     <center>
       <a href='/logout'>Log out</a>
     </center>
+    <script src='/js/jquery-1.11.3.min.js'></script>
+    <script src='/js/home.js'></script>
   </body>
 </html>
