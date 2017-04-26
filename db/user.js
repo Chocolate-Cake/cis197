@@ -44,30 +44,19 @@ userSchema.statics.deleteUser = function(username, cb) {
   });
 }
 
-//function that manages user login
-userSchema.statics.checkIfLegit = function(username, password, cb) {
-  this.findOne({ username: username }, function(err, user) {
-    if (!user) cb('no user');
-    else {
-      bcrypt.compare(password, user.password, function(err, isRight) {
-        if (err) return cb(err);
-        cb(null, isRight);
-      });
-    };
-  });
-}
-
 //function that adds a new Schedule to the user's array of schedules
 userSchema.statics.addSchedule = function(username, schedulename, cb) {
 	//make new schedule
   var newSchedule = new Schedule({
     name: schedulename,
-    owner: this.username
+    owner: username
   });
 
   this.findOne({username: username}, function (error, myself) {
-    var valid = true;
+    
     if (myself) {
+      var valid = true;
+      //check schedule doesn't already exist
       for (var i = 0; i < myself.schedules.length; i++) {
         if (myself.schedules[i].name === schedulename) {
           console.log('schedule already exists');
@@ -78,6 +67,8 @@ userSchema.statics.addSchedule = function(username, schedulename, cb) {
       if (valid) {
         console.log('added new schedule');
         myself.schedules.push(newSchedule);
+      } else {
+        console.log('did not add new schedule');
       }
       myself.save(cb);
     } else {
@@ -101,6 +92,62 @@ userSchema.statics.deleteSchedule = function(username, schedulename, cb) {
   });
 }
 
+userSchema.statics.addEvent = function(owner, schedulename, name, date, priority, info, cb) {
+  var newEvent = new Event({
+    name: name,
+    date: date,
+    priority: priority,
+    info: info,
+  });
+  
+  this.findOne({username: owner}, function (error, result) {
+    if (myself) {
+      for (var i = 0; i < myself.schedules.length; i++) {
+        if (myself.schedules[i].name === schedulename) {
+          var s = myself.schedules[i];
+          var valid = true;
+
+          for (var j = 0; j < s.events.length; j++) {
+            if (s.events[j].name === name) {
+              console.log('event already exists');
+              valid = false;
+            }
+          }
+
+          if (valid) {
+            s.events.push(newEvent);
+          }
+        }
+      }
+      myself.save(cb);
+    } else {
+      cb(error);
+    }
+  });
+}
+
+userSchema.statics.deleteEvent = function(owner, schedulename, eventName, cb) {
+  this.findOne({username: owner}, function (error, myself) {
+    if (myself) {
+      for (var i = 0; i < myself.schedules.length; i++) {
+        if (myself.schedules[i].name === schedulename) {
+          var s = myself.schedules[i];
+
+          for (var i = 0; i < s.events.length; i++) {
+            if (s.events[i].name === eventName) {
+              s.events.splice(i, 1);
+            }
+          }
+        }
+      }
+
+      myself.save(cb);
+    } else {
+      cb(error);
+    }
+  });
+}
+
 //function that adds a friend to the current user, so now you have the
 //option of sharing schedules with this person
 userSchema.statics.addFriend = function(username, friendname, cb) {
@@ -111,12 +158,7 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
       console.log('friend exists');
       top.findOne({username: username}, function (err, myself) {
         //find self and push friend
-        //TODO check no double push
         if (myself) {
-          console.log('i exist');
-          console.log(myself);
-          console.log('array: ' + myself.friends);
-          console.log('length: ' + myself.friends.length);
           var valid = true;
 
           for (var i = 0; i < myself.friends.length; i++) {
@@ -165,6 +207,19 @@ userSchema.statics.deleteFriend = function (username, friendname, cb) {
     } else {
       cb(error);
     }
+  });
+}
+
+//function that manages user login
+userSchema.statics.checkIfLegit = function(username, password, cb) {
+  this.findOne({ username: username }, function(err, user) {
+    if (!user) cb('no user');
+    else {
+      bcrypt.compare(password, user.password, function(err, isRight) {
+        if (err) return cb(err);
+        cb(null, isRight);
+      });
+    };
   });
 }
 

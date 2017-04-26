@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-mongoose.createConnection('mongodb://localhost/db');
+//mongoose.createConnection('mongodb://localhost/db');
 var Schema = mongoose.Schema;
 
 var eventSchema = new Schema ({

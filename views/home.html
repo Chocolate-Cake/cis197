@@ -19,25 +19,41 @@
         </td>
       </tr>
       <tr>
-        <td id = 'populateSchedulesList' style='border: 1px solid black; overflow:scroll'>
-
+        <td style='border: 1px solid black; overflow:scroll'>
+          <div style='width:100%; height:100%; overflow:scroll'>
+            <% for(var i = 0; i < arrSchedules.length; i++) {%>
+            <div class='scheduleClickable' id='schedule<%= i %>'><%= arrSchedules[i].name %></div>
+            <% } %>
+          <div>
         </td>
-        <td id = 'populateSharedSchedules' style='border: 1px solid black; overflow:scroll'>
-
+        <td style='border: 1px solid black; overflow:scroll'>
+          <div style='width:100%; height:100%; overflow:scroll'>
+            <% for(var i = 0; i < arrShared.length; i++) {%>
+            <div class='sharedClickable' id='shared<%= i %>'>This is element placeholder</div>
+            <% } %>
+          <div>
         </td>
-        <td id = 'populateFriendsList' style='border: 1px solid black; overflow:scroll'>
-
+        <td style='border: 1px solid black; overflow:scroll'>
+            <div style='width:100%; height:100%; overflow:scroll'>
+            <% for(var i = 0; i < arrFriends.length; i++) {%>
+            <div class='friendClickable' id='friend<%= i %>'><%= arrFriends[i] %></div>
+            <% } %>
+          <div>
         </td>
       </tr>
       <tr style='height:30px; text-align:center'>
         <td style='border: 1px solid black'>
-          <a href='/addschedule'>Add Schedule</a>
+          <input type='text' id='homeScheduleInput'/>
+          <button id='homeScheduleAdd'>Add Schedule</button>
+          <button id='homeScheduleDelete'>Delete Schedule</button>
         </td>
         <td style='border: 1px solid black'>
-          
+          <a href='/addeditor'>Share My Schedules</a>
         </td>
         <td style='border: 1px solid black'>
-          <a href='/addfriend'>Add Friend</a>
+          <input type='text' id='homeScheduleInput'/>
+          <button id='homeFriendAdd'>Add Friend</button>
+          <button id='homeFriendDelete'>Delete Friend</button>
         </td>
       </tr>
     </table>

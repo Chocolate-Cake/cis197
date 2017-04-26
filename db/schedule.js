@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var db = mongoose.createConnection('mongodb://localhost/db');
+//mongoose.connect('mongodb://localhost/db');
 var Schema = mongoose.Schema;
 var Event = require('./event');
 var User = require('./user');
