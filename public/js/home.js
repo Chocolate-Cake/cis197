@@ -64,7 +64,7 @@ $(document).ready(function() {
 	    });
 	    window.location.href = '/viewschedule';
 	});
-
+	//----------------------------------------------------
 	$('#homeSharedOpen').click(function() {
 		var input = $('#homeSharedInput').val();
 		

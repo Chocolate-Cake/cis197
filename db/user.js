@@ -207,7 +207,7 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
               friend.shared.push(myself.schedules[i]);
             }
           }
-          myself.save(cb);
+          myself.save(friend.save(cb));
 
         } else {
           cb(err);

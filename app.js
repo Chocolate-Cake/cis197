@@ -107,7 +107,8 @@ app.get('/home', function (req, res) {
       if (!result) {
         res.send('failed to find user for rendering home');
       } else {
-        //console.log("this user is " + result);
+
+        console.log("this user is " + result);
         var shared = result.shared;
         var friends = result.friends;
         var schedules = result.schedules;
@@ -227,7 +228,6 @@ app.get('/viewschedule', function (req, res) {
       })
       break;
     }
-    //res.render('viewschedule');
   }
 });
 
