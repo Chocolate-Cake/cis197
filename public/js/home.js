@@ -51,7 +51,31 @@ $(document).ready(function() {
 	    });
 	});
 	//----------------------------------------------------
-	$('.scheduleClickable').click(function() {
-		console.log(event.target.id);
+	$('#homeScheduleOpen').click(function() {
+		var input = $('#homeScheduleInput').val();
+		
+		$.ajax({
+	      type: 'POST',
+	      url: '/home',
+	      data: { 
+	        clicked: 'openschedule',
+	        attr: input
+	      }
+	    });
+	    window.location.href = '/viewschedule';
+	});
+
+	$('#homeSharedOpen').click(function() {
+		var input = $('#homeSharedInput').val();
+		
+		$.ajax({
+	      type: 'POST',
+	      url: '/home',
+	      data: { 
+	        clicked: 'openshared',
+	        attr: input
+	      }
+	    });
+	    window.location.href = '/viewschedule';
 	});
 });

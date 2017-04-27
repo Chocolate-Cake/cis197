@@ -3,6 +3,7 @@ mongoose.connect('mongodb://localhost/db');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt');
 var Schedule = require('./schedule');
+var Event = require('./event');
 
 var userSchema = new Schema({
   username: { type: String, required: true, unique: true },
@@ -92,6 +93,34 @@ userSchema.statics.deleteSchedule = function(username, schedulename, cb) {
   });
 }
 
+userSchema.statics.displaySchedule = function(username, name, cb) {
+  this.findOne({username: username}, function (error, myself) {
+    if (myself) {
+      for (var i = 0; i < myself.schedules.length; i++) {
+        if (myself.schedules[i].name === name) {
+          cb(null, myself.schedules[i]);
+        }
+      }
+    } else {
+      cb(error);
+    }
+  });
+}
+
+userSchema.statics.displayShared = function(username, name, cb) {
+  this.findOne({username: username}, function (error, myself) {
+    if (myself) {
+      for (var i = 0; i < myself.shared.length; i++) {
+        if (myself.shared[i].name === name) {
+          cb(null, myself.shared[i]);
+        }
+      }
+    } else {
+      cb(error);
+    }
+  }); 
+}
+
 userSchema.statics.addEvent = function(owner, schedulename, name, date, priority, info, cb) {
   var newEvent = new Event({
     name: name,
@@ -100,11 +129,13 @@ userSchema.statics.addEvent = function(owner, schedulename, name, date, priority
     info: info,
   });
   
-  this.findOne({username: owner}, function (error, result) {
+  this.findOne({username: owner}, function (error, myself) {
     if (myself) {
       for (var i = 0; i < myself.schedules.length; i++) {
         if (myself.schedules[i].name === schedulename) {
           var s = myself.schedules[i];
+          console.log('SCHEDULE:' + s);
+          console.log(myself);
           var valid = true;
 
           for (var j = 0; j < s.events.length; j++) {
@@ -115,11 +146,12 @@ userSchema.statics.addEvent = function(owner, schedulename, name, date, priority
           }
 
           if (valid) {
+            console.log('added new event');
             s.events.push(newEvent);
+            s.save(cb);
           }
         }
       }
-      myself.save(cb);
     } else {
       cb(error);
     }

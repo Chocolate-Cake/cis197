@@ -4,35 +4,40 @@
     <h1>Add Event</h1>
   </head>
   <body style='text-align:center'>
-    <form method='post'>
       Choose Schedule:
       <br>
-      <select name='eventSchedule' id='populateEventSchedule'>
-        <br>
-        <br>
+      <select id='eventSchedule'>
+        <% for(var i = 0; i < arrList.length; i++) {%>
+          <option value='<%=arrList[i].name%>'><%=arrList[i].name%></option>
+        <% } %>
       </select>
       <br>
       <br>
       Event Name:
       <br>
-      <input type='text' name='eventName' placeholder='Event name'>
+      <input type='text' id='eventName' placeholder='Event name'>
       <br>
       <br>
       Event Date:
       <br>
-      <input type='date' name='eventDate'>
+      <input type='date' id='eventDate'>
       <br>
       <br>
       Event Priority (1 = low, 3 = high)
       <br>
-      <input type='number' name='eventPriority'>
+      <select id = 'eventPriority'>
+        <option value='1'>Low</option>
+        <option value='2'>Medium</option>
+        <option value='3'>High</option>
+      </select>
       <br>
       <br>
       Event Info
       <br>
-      <input type='text' name='eventInfo'>
+      <input type='text' id='eventInfo'>
       <br>
-      <input type='submit'>
-    </form>
+      <button id='eventSubmit'>Submit</button>
+    <script src='/js/jquery-1.11.3.min.js'></script>
+    <script src='/js/addevent.js'></script>
   </body>
 </html>

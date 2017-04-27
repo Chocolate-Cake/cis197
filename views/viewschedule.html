@@ -10,7 +10,7 @@
       <tr style='background-color:green'>
         <td style="border: 1px solid black">
           <div id='scheduleName' style='width:70%; display: inline-block; font-size:200%; font-family: "Book Antiqua", Palatino, serif;'>
-          Schedule Name Here
+          <%= name %>
           </div>
           <div style='display: inline-block; float:right'>
           <form method='post'>
@@ -18,7 +18,7 @@
               <option value="" disabled selected>Select Action</option>
               <option value='addEvent'>Add New Event to Schedule</option>
               <option value='changeDisplay'>Change Schedule Display Option</option>
-              <option value='addEditor'>Add Viewer to Scedule</option>
+              <option value='addEditor'>Add Editor to Schedule</option>
               <option value='switchSchedule'>Switch Schedules</option>
               <option value='addFriend'>Add Friend</option>
             </select>
@@ -31,121 +31,17 @@
       <tr>
         <td>
           <div id="scheduleBox" style="overflow:scroll; height:650px; text-align: center">
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            <h1 style='color:blue'>TODO: FIGURE OUT HOW TO RENDER</h1>
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-
-
-            Schedule gets pulled from databse and goes here. 
-
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-
-            <h1>PROOF OF CONCEPT</h1>
-
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
-            text
-            <br>
+            <% for(var i = 0; i < arrEvents.length; i++) {%>
+            <div id='event<%= i %>'>
+              <%= arrEvents[i].name %>
+              <br>
+              <%= arrEvents[i].date %>
+              <br>
+              <%= arrEvents[i].priority %>
+              <br>
+              <%= arrEvents[i].info %>
+            </div>
+            <% } %>
           </div>
         </td>
       </tr>
