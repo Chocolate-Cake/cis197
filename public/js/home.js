@@ -59,7 +59,8 @@ $(document).ready(function() {
 	      url: '/home',
 	      data: { 
 	        clicked: 'openschedule',
-	        attr: input
+	        attr: input,
+	        attr2: ''
 	      }
 	    });
 	    window.location.href = '/viewschedule';
@@ -67,13 +68,15 @@ $(document).ready(function() {
 	//----------------------------------------------------
 	$('#homeSharedOpen').click(function() {
 		var input = $('#homeSharedInput').val();
-		
+		var spec = $('#homeSharedOwner').val();
+
 		$.ajax({
 	      type: 'POST',
 	      url: '/home',
 	      data: { 
 	        clicked: 'openshared',
-	        attr: input
+	        attr: input,
+	        attr2: spec
 	      }
 	    });
 	    window.location.href = '/viewschedule';

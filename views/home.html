@@ -2,22 +2,23 @@
 <html>
   <head>
     <center>
-    <h1>Welcome to the Schedule App, <%= username %><h1>
+    <h2>Welcome to the Schedule App, <%= username %><h2>
     </center>
   </head>
   <body>
-    <table style='width:100%; height:500px; padding:20px'>
+    <table style='width:100%; height:600px; padding:20px'>
       <tr style='height:30px; text-align:center'>
         <td style='width:33%; border: 1px solid black'>
-          <b>My Schedules</b>
+          <b>My schedules</b>
+          <p>All your existing schedules are displayed below. Type in the text box to make changes to your schedule list</p>
         </td>
         <td style='width:34%; border: 1px solid black'>
-          <b>Schedules Shared With Me</b>
-          <br>
-          <a href='/addeditor'>Share My Schedules</a>
+          <b>Schedules people shared With Me</b>
+          <p>All the schedules that other people shared with you are displayed below. Type in the name of the schedule to view it</p>
         </td>
         <td style='width:33%; border: 1px solid black'>
-          <b>My Friends</b>
+          <b>People I am sharing my schedules with</b>
+          <p>All the people who can view and edit your schedules are below. Type in the text box to make changes to this list of people</p>
         </td>
       </tr>
       <tr>
@@ -31,7 +32,7 @@
         <td style='border: 1px solid black; overflow:scroll'>
           <div style='width:100%; height:100%; overflow:scroll'>
             <% for(var i = 0; i < arrShared.length; i++) {%>
-            <div class='sharedClickable' id='shared<%= i %>'><%= arrShared[i].name %></div>
+            <div class='sharedClickable' id='shared<%= i %>'><%= arrShared[i].name %> owned by <%= arrShared[i].owner %></div>
             <% } %>
           <div>
         </td>
@@ -53,6 +54,7 @@
         </td>
         <td style='border: 1px solid black'>
           <input type='text' id='homeSharedInput'/>
+          <input type='text' id='homeSharedOwner'/>
           <br>
           <button id='homeSharedOpen'>View Schedule</button>
         </td>

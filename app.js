@@ -103,21 +103,28 @@ app.get('/home', function (req, res) {
   if (!req.session.username || req.session.username === '') {
     res.send('failed to render home');
   } else {   
-    User.findOne({username: req.session.username}, function (error, result) {
-      if (!result) {
-        res.send('failed to find user for rendering home');
-      } else {
+    User.findOne({username: req.session.username}, function (error, myself) {
+      if (myself) {
+        var shared = new Array();
+        User.find({sharedByMe:[req.session.username]}, function (err, result) {
+          if (result) {
+            for (var i = 0; i < result.length; i++) {
+              shared.push.apply(shared, result[i].schedules);
+            }
+          }
 
-        console.log("this user is " + result);
-        var shared = result.shared;
-        var friends = result.friends;
-        var schedules = result.schedules;
+        var friends = myself.sharedByMe;
+        var schedules = myself.schedules;
+        console.log("shared " + shared.length);
         res.render('home', {
           username: req.session.username, 
           arrSchedules: schedules,
           arrShared: shared,
           arrFriends: friends
         });
+      });
+      } else {
+        console.log('failed to find user for rendering home');
       }
     });
   }
@@ -154,11 +161,15 @@ app.post('/home', function (req, res) {
 
     case 'addfriend':
     if (input !== '') {
-      User.addFriend(req.session.username, input, function (error) {
+      User.friendAddMe(req.session.username, input, function (error) {
         if (error) {
           console.log('failed to add new friend');
         } else {
-          res.redirect('/home');
+          User.addFriend(req.session.username, input, function (err) {
+            if (err) {
+              console.log('failed to add new friend');
+            } 
+          })
         }
       });
     }
@@ -166,11 +177,15 @@ app.post('/home', function (req, res) {
 
     case 'deletefriend':
     if (input !== '') {
-      User.deleteFriend(req.session.username, input, function (error) {
-        if (error) {
-          console.log('failed to delete friend');
+      User.friendDeleteMe(req.sessoin.username, input, function (e) {
+        if (e) {
+          console.log('error');
         } else {
-          res.redirect('/home');
+          User.deleteFriend(req.session.username, input, function (e2) {
+            if (e2) {
+              console.log('error');
+            }
+          })
         }
       });
     }
@@ -189,8 +204,27 @@ app.post('/home', function (req, res) {
       console.log(input);
       req.session.view = 'shared';
       req.session.n = input;
+      req.session.o = req.body.attr2;
       res.redirect('/viewschedule');
     break;
+
+    case 'deleteevent':
+      console.log('home received del event');
+      var o = req.body.owner;
+      var s = req.body.schedulename;
+      var e = req.body.eventname;
+
+      console.log(o);
+      console.log(s);
+      console.log(e);
+
+      User.deleteEvent(o, s, e, function (error) {
+        if (error) {
+          res.send('error deleting event');
+        }
+      });
+    break;
+
   }
 });
 
@@ -200,32 +234,30 @@ app.post('/home', function (req, res) {
 redirects to addevent, addeditor, home, addfriend
 */
 app.get('/viewschedule', function (req, res) {
-  //TODO CURRENTLY CANNOT TEST
   if (!req.session.username || req.session.username === '') {
     res.send('failed to render viewschedule');
   } else {
-    console.log('user ' + req.session.username);
-    console.log('param ' + req.session.n);
+    console.log('open my own schedule');
     switch(req.session.view) {
       case 'schedule':
-      User.displaySchedule(req.session.username, req.session.n, function (error, result) {
+      Schedule.findOne({owner: req.session.username, name: req.session.n}, function (error, result) {
         if (result) {
-          console.log(result);
-          res.render('viewschedule', {name: result.name, arrEvents: result.events});
+          res.render('viewschedule', {name: result.name, owner: req.session.username, arrEvents: result.events});
         } else {
-          console.log('error retrieving schedule');
+          console.log("error displaying schedule");
         }
       });
       break;
       
       case 'shared':
-      User.displayShared(req.session.username, req.session.n, function (error, result) {
+      Schedule.findOne({owner: req.session.o, name: req.session.n}, function (error, result) {
         if (result) {
-          res.render('viewschedule', {name: result.name, arrEvents: result.events});
+          res.render('viewschedule', {name: result.name, owner: result.owner, arrEvents: result.events});
         } else {
-          console.log('error retrieving schedule');
+          console.log('errer loading up shedule');
         }
-      })
+      });
+      //res.render('viewschedule', {name: 'placeholder', owner: 'placeholder', arrEvents: new Array()});
       break;
     }
   }
@@ -240,18 +272,10 @@ app.post('/viewschedule', function (req, res) {
     break;
     case 'changeDisplay':
       console.log('result was change display');
-      //TODO call function CURRENT DOESN'T EXIST
+      //TODO call function CURRENTLY DOESN'T EXIST
     break;
-    case 'addEditor':
-      console.log('result was add editor');
-      res.redirect('/addeditor');
-    break;
-    case 'switchSchedule':
+    case 'home':
       res.redirect('/home');
-    break;
-    case 'addFriend':
-      console.log('result was add friend');
-      res.redirect('/addfriend');
     break;
   }
   
@@ -262,6 +286,7 @@ app.post('/viewschedule', function (req, res) {
 /*
 redirects to home
 */
+/*
 app.get('/addeditor', function (req, res) {
   if (!req.session.username || req.session.username === '') {
     res.send('failed to render add editor');
@@ -287,13 +312,13 @@ app.post('/addeditor', function (req, res) {
           } 
           else {
             console.log('did add editor');
-            res.redirect('/home');
+            res.redirect('/viewschedule');
           }
       });
     }
   });
 });
-
+*/
 //ADDEVENT.HTML------------------------------------
 /*
 redirects to home
@@ -304,7 +329,13 @@ app.get('/addevent', function (req, res) {
   } else {
     User.findOne({username: req.session.username}, function (error, myself) {
       if (myself) {
-        res.render('addevent', {arrList: myself.schedules});
+        //get schedules of everyone who shared schedules with me
+        var arr = new Array();
+        for (var i = 0; i < myself.sharedToMe.length; i++) {
+          arr.push.apply(arr, myself.sharedToMe[i].schedules);
+        }
+
+        res.render('addevent', {arrList: myself.schedules, arrList2: arr});
       } else {
         console.log('could not find user');
       }
@@ -313,32 +344,106 @@ app.get('/addevent', function (req, res) {
 });
 
 app.post('/addevent', function (req, res) {
+  var type = req.body.clicked;
+  var owner = req.body.owner;
   var schedule = req.body.schedule;
   var eventName = req.body.eventName;
   var eventDate = req.body.eventDate;
   var eventPriority = req.body.eventPriority;
   var eventInfo = req.body.eventInfo;
 
+  console.log(type);
+  console.log(owner);
   console.log(schedule);
   console.log(eventName);
   console.log(eventDate);
   console.log(eventPriority);
   console.log(eventInfo);
 
-  
-  User.addEvent(req.session.username, schedule, eventName, eventDate,
-    eventPriority, eventInfo, function (error) {
-    if (error) {
-      console.log('error adding event');
-    }
-  })
 
+  switch(type) {
+    case 'newEvent':
+    if (schedule !== '' && eventName !== '') {
+      User.addEvent(req.session.username, schedule, eventName, eventDate,
+        eventPriority, eventInfo, function (error) {
+        if (error) {
+          console.log('error adding event');
+        }
+      })
+      req.session.n = schedule;
+      res.redirect('/viewschedule');
+    } else {
+      console.log('failed to add event');
+      res.send('invalid schedule or event name');
+    }
+    res.redirect('/viewschedule');
+    break;
+    
+    case 'sharedEvent':
+    if (schedule !== '' && eventName !== '') {
+      //TODO
+    }
+    break;
+  }
+
+  
 });
 
 //ERROR.HTML--------------------------------------
 app.get('/error', function (req, res) {
   res.render('error');
 })
+
+//TEST.HTML---------------------------------------
+app.get('/test', function (req, res) {
+  res.render('test');
+  console.log("DISPLAY ALL USER INFO");
+
+  User.find(function (error, result) {
+    if(result) {
+      console.log(result);
+    }
+  });
+  
+  console.log("DISPLAY ALL SCHEDULE INFO");
+
+  Schedule.find(function (error, result) {
+    if(result) {
+      console.log(result);
+    }
+  });
+
+  console.log("DISPLAY ALL EVENT INFO");
+
+  Event.find(function (error, result) {
+    if (result) {
+      console.log(result);
+    }
+  });
+});
+
+//CLEAR.HTML-----------------------------
+
+app.get('/clear', function (req, res) {
+  User.remove({}, function (err) {
+    if (err) {
+      console.log('failed to clear user');
+    }
+  });
+  Schedule.remove({}, function (err) {
+    if (err) {
+      console.log('failed to clear schedule');
+    }
+  });
+  Event.remove({}, function (err) {
+    if (err) {
+      console.log('failed to clear event');
+    }
+  });
+  req.session.username = '';
+  res.render('clear');
+});
+
 
 
 app.set('port', process.env.PORT || 3000);

@@ -7,7 +7,8 @@ var eventSchema = new Schema ({
   date: {type: Date, required: true},
   priority: {type: Number, required: true},
   info: {type: String, required: true},
-  schedulename: {type: String, required: true}
+  schedulename: {type: String, required: true},
+  owner: {type: String, required: true}
 });
 
 module.exports = mongoose.model('Event', eventSchema);

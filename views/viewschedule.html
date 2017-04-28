@@ -7,20 +7,21 @@
   </head>
   <body>
     <table style="border: 1px solid black;width:100%">
-      <tr style='background-color:green'>
-        <td style="border: 1px solid black">
-          <div id='scheduleName' style='width:70%; display: inline-block; font-size:200%; font-family: "Book Antiqua", Palatino, serif;'>
-          <%= name %>
+      <tr style='background-color:lightblue'>
+        <td style="border: 1px solid white">
+          <div style='display: inline-block;'>
+            <div id='scheduleName' style='width:70%; font-size:200%; font-family: "Book Antiqua", Palatino, serif;'>
+            <%= name %>
+            </div>
+            Schedule owned by <b><%=owner%></b>
           </div>
           <div style='display: inline-block; float:right'>
           <form method='post'>
             <select name='userOption'>
               <option value="" disabled selected>Select Action</option>
-              <option value='addEvent'>Add New Event to Schedule</option>
+              <option value='addEvent'>Add New Event to a Schedule</option>
               <option value='changeDisplay'>Change Schedule Display Option</option>
-              <option value='addEditor'>Add Editor to Schedule</option>
-              <option value='switchSchedule'>Switch Schedules</option>
-              <option value='addFriend'>Add Friend</option>
+              <option value='home'>Go to Home</option>
             </select>
             <br>
             <input type='submit'>
@@ -30,22 +31,45 @@
       </tr>
       <tr>
         <td>
-          <div id="scheduleBox" style="overflow:scroll; height:650px; text-align: center">
+          <div id="scheduleBox" style="overflow:scroll; height:600px; text-align: center; padding: 5px">
             <% for(var i = 0; i < arrEvents.length; i++) {%>
-            <div id='event<%= i %>'>
-              <%= arrEvents[i].name %>
-              <br>
-              <%= arrEvents[i].date %>
-              <br>
-              <%= arrEvents[i].priority %>
-              <br>
-              <%= arrEvents[i].info %>
-            </div>
+              <%if (arrEvents[i].priority == 1) {%>
+                <div class='deletable' id='e<%=i%>' data-owner='<%=arrEvents[i].owner%>' data-name='<%=arrEvents[i].name%>' data-schedule='<%=arrEvents[i].schedulename%>' style='border: 1px solid white; background-color: greenyellow; margin-bottom: 5px'>
+                  <b>Event Name:</b> <%= arrEvents[i].name %>
+                  <br>
+                  <b>Event Date:</b> <%= arrEvents[i].date %>
+                  <br>
+                  <b>Event Priority:</b> Low
+                  <br>
+                  <%= arrEvents[i].info %>
+                </div>
+              <% } else if (arrEvents[i].priority == 2) {%>
+                <div class='deletable' id='e<%=i%>' data-owner='<%=arrEvents[i].owner%>' data-name='<%=arrEvents[i].name%>' data-schedule='<%=arrEvents[i].schedulename%>' style='border: 1px solid white; background-color: lightsalmon; margin-bottom: 5px'>
+                  <b>Event Name:</b> <%= arrEvents[i].name %>
+                  <br>
+                  <b>Event Date:</b> <%= arrEvents[i].date %>
+                  <br>
+                  <b>Event Priority:</b> Medium
+                  <br>
+                  <%= arrEvents[i].info %>
+                </div>
+              <% } else {%>
+                <div class='deletable' id='e<%=i%>' data-owner='<%=arrEvents[i].owner%>' data-name='<%=arrEvents[i].name%>' data-schedule='<%=arrEvents[i].schedulename%>' style='border: 1px solid white; background-color: indianred; margin-bottom: 5px'>
+                  <b>Event Name:</b> <%= arrEvents[i].name %>
+                  <br>
+                  <b>Event Date:</b> <%= arrEvents[i].date %>
+                  <br>
+                  <b>Event Priority:</b> High
+                  <br>
+                  <%= arrEvents[i].info %>
+                </div>
+              <% } %>
             <% } %>
           </div>
         </td>
       </tr>
     </table>
+    <script src='/js/jquery-1.11.3.min.js'></script>
+    <script src='/js/viewschedule.js'></script>
   </body>
-  
 </html>

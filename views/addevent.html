@@ -4,39 +4,88 @@
     <h1>Add Event</h1>
   </head>
   <body style='text-align:center'>
-      Choose Schedule:
-      <br>
-      <select id='eventSchedule'>
-        <% for(var i = 0; i < arrList.length; i++) {%>
-          <option value='<%=arrList[i].name%>'><%=arrList[i].name%></option>
-        <% } %>
-      </select>
-      <br>
-      <br>
-      Event Name:
-      <br>
-      <input type='text' id='eventName' placeholder='Event name'>
-      <br>
-      <br>
-      Event Date:
-      <br>
-      <input type='date' id='eventDate'>
-      <br>
-      <br>
-      Event Priority (1 = low, 3 = high)
-      <br>
-      <select id = 'eventPriority'>
-        <option value='1'>Low</option>
-        <option value='2'>Medium</option>
-        <option value='3'>High</option>
-      </select>
-      <br>
-      <br>
-      Event Info
-      <br>
-      <input type='text' id='eventInfo'>
-      <br>
-      <button id='eventSubmit'>Submit</button>
+
+    <table style='width:100%'>
+      <tr>
+        <td style='width:50%'>
+          Choose my schedule:
+          <br>
+          <select id='eventSchedule'>
+            <% for(var i = 0; i < arrList.length; i++) {%>
+              <option value='<%=arrList[i].name%>'><%=arrList[i].name%></option>
+            <% } %>
+          </select>
+          <br>
+          <br>
+          Event Name:
+          <br>
+          <input type='text' id='eventName' placeholder='Event name'>
+          <br>
+          <br>
+          Event Date:
+          <br>
+          <input type='date' id='eventDate'>
+          <br>
+          <br>
+          Event Priority (1 = low, 3 = high)
+          <br>
+          <select id = 'eventPriority'>
+            <option value='1'>Low</option>
+            <option value='2'>Medium</option>
+            <option value='3'>High</option>
+          </select>
+          <br>
+          <br>
+          Event Info
+          <br>
+          <input type='text' id='eventInfo'>
+          <br>
+          <button id='eventSubmit'>Submit</button>
+        </td>
+        <td>
+          Choose shared-with-me schedule:
+          <br>
+          <select id='sharedSchedule'>
+            <% for(var i = 0; i < arrList2.length; i++) {%>
+              <option value='<%=arrList2[i].name%>' data-owner='<%=arrList2[i].owner%>'>
+                <%=arrList2[i].name%></option>
+            <% } %>
+          </select>
+          <br>
+          <br>
+          Event Name:
+          <br>
+          <input type='text' id='sharedName' placeholder='Event name'>
+          <br>
+          <br>
+          Event Date:
+          <br>
+          <input type='date' id='sharedDate'>
+          <br>
+          <br>
+          Event Priority (1 = low, 3 = high)
+          <br>
+          <select id = 'sharedPriority'>
+            <option value='1'>Low</option>
+            <option value='2'>Medium</option>
+            <option value='3'>High</option>
+          </select>
+          <br>
+          <br>
+          Event Info
+          <br>
+          <input type='text' id='sharedInfo'>
+          <br>
+          <button id='sharedSubmit'>Submit</button>
+        </td>
+      </tr>
+    </table>
+
+
+
+
+
+      
     <script src='/js/jquery-1.11.3.min.js'></script>
     <script src='/js/addevent.js'></script>
   </body>
