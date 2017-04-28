@@ -328,14 +328,22 @@ app.get('/addevent', function (req, res) {
     res.send('failed to render add event');
   } else {
     User.findOne({username: req.session.username}, function (error, myself) {
+      //find me
       if (myself) {
-        //get schedules of everyone who shared schedules with me
-        var arr = new Array();
-        for (var i = 0; i < myself.sharedToMe.length; i++) {
-          arr.push.apply(arr, myself.sharedToMe[i].schedules);
-        }
-
-        res.render('addevent', {arrList: myself.schedules, arrList2: arr});
+        User.find({sharedByMe: [req.session.username]}, function (err, result) {
+          if (result) {
+            //get schedules of everyone who shared schedules with me
+            console.log('has found shared to me');
+            var arr = new Array();
+            for (var i = 0; i < result.length; i++) {
+              arr.push.apply(arr, result[i].schedules);
+            }
+          } else {
+            cb(err);
+          }
+          res.render('addevent', {arrList: myself.schedules, arrList2: arr});
+          
+        });
       } else {
         console.log('could not find user');
       }
@@ -363,25 +371,35 @@ app.post('/addevent', function (req, res) {
 
   switch(type) {
     case 'newEvent':
+    req.session.view = 'schedule';
     if (schedule !== '' && eventName !== '') {
       User.addEvent(req.session.username, schedule, eventName, eventDate,
         eventPriority, eventInfo, function (error) {
         if (error) {
           console.log('error adding event');
         }
-      })
+      });
       req.session.n = schedule;
       res.redirect('/viewschedule');
     } else {
       console.log('failed to add event');
-      res.send('invalid schedule or event name');
     }
     res.redirect('/viewschedule');
     break;
     
     case 'sharedEvent':
+    req.session.view = 'shared';
     if (schedule !== '' && eventName !== '') {
-      //TODO
+      User.addEvent(owner, schedule, eventName, eventDate,
+        eventPriority, eventInfo, function (error) {
+        if (error) {
+          console.log('error adding event');
+        }
+      });
+      req.session.n = schedule;
+      res.redirect('/viewschedule');
+    } else {
+      console.log('failed to add shared event');
     }
     break;
   }

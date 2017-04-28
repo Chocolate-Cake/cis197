@@ -28,12 +28,14 @@ $(document).ready(function() {
 
 
   $('#sharedSubmit').click(function() {
-    var schedule = $('#sharedSchedule').val();
+    var id = $('#sharedSchedule').val();
+    var schedule = $('#' + id).data('schedulename');
+    var owner = $('#' + id).data('owner');
     var name = $('#sharedName').val();
     var date = $('#sharedDate').val();
     var priority = $('#sharedPriority').val();
     var info = $('#sharedInfo').val();
-    var owner = $('#' + schedule).data('owner');
+
 
     $.ajax({
         type: 'POST',
@@ -51,6 +53,7 @@ $(document).ready(function() {
           window.location.href='/viewschedule';
         }
       });
-   });   
+   }); 
+
 });	
 	

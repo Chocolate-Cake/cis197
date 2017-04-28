@@ -47,8 +47,8 @@
           <br>
           <select id='sharedSchedule'>
             <% for(var i = 0; i < arrList2.length; i++) {%>
-              <option value='<%=arrList2[i].name%>' data-owner='<%=arrList2[i].owner%>'>
-                <%=arrList2[i].name%></option>
+              <option id='sharedDisplay<%=i%>' value='sharedDisplay<%=i%>' data-schedulename='<%=arrList2[i].name%>' data-owner='<%=arrList2[i].owner%>'>
+                <%=arrList2[i].name%> owned by <%=arrList2[i].owner%></option>
             <% } %>
           </select>
           <br>
