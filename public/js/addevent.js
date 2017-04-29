@@ -1,7 +1,6 @@
 $(document).ready(function() {
 
 	$('#eventSubmit').click(function() {
-    console.log('clicked add event button');
 		var schedule = $('#eventSchedule').val();
 		var name = $('#eventName').val();
 		var date = $('#eventDate').val();

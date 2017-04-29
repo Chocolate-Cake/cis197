@@ -95,7 +95,6 @@ $(document).ready(function() {
   });
   //----------------------------------------------------
   $('#dateOrder').click(function () {
-    console.log('dateOrder');
     $.ajax({
         type: 'POST',
         url: '/home',
@@ -109,7 +108,6 @@ $(document).ready(function() {
     });
   //----------------------------------------------------
   $('#priorityOrder').click(function () {
-    console.log('priorityOrder');
     $.ajax({
       type: 'POST',
       url: '/home',
@@ -123,7 +121,6 @@ $(document).ready(function() {
   });
   //----------------------------------------------------
   $('#alphaOrder').click(function () {
-    console.log('alphaOrder');
     $.ajax({
       type: 'POST',
       url: '/home',

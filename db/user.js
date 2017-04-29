@@ -50,7 +50,6 @@ userSchema.statics.addSchedule = function(username, schedulename, cb) {
       //check schedule doesn't already exist
       Schedule.findOne({owner: username, name: schedulename}, function (error, result) {
         if (result) {
-          console.log('schedule already exists');
           cb(null);
         } else if (error) {
           cb(error);
@@ -111,7 +110,6 @@ userSchema.statics.deleteSchedule = function(username, schedulename, cb) {
 }
 
 userSchema.statics.addEvent = function(owner, schedulename, name, date, priority, info, cb) {
-  console.log("called add event function");
   var newEvent = new Event({
     name: name,
     date: date,
@@ -126,17 +124,13 @@ userSchema.statics.addEvent = function(owner, schedulename, name, date, priority
       //check if this event exists already
       Event.findOne({owner: owner, schedulename: schedulename, name: name}, function(err, evt) {
         if (evt) {
-          console.log('event already exists');
           cb(null);
         } else if (err) {
-          console.log('error');
           cb(err);
         } else {
-          console.log('added new event');
           result.events.push(newEvent);
           newEvent.save(function (err2) {
             if (err2) {
-              console.log("ERRROR" + err2);
               cb(err2);
             } else {
               result.save(cb);
@@ -145,7 +139,6 @@ userSchema.statics.addEvent = function(owner, schedulename, name, date, priority
         }
       });
     } else {
-      console.log('error finding schedule for addevent');
       cb(error);
     }
   });
@@ -188,10 +181,8 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
   var top = this;
   this.findOne({username: friendname}, function (error, friend) {
     if (friend) {
-      console.log('found friend exists');
       top.findOne({username: username}, function (err, myself) {
         if (myself) {
-          console.log('found i exist');
           //check i haven't added this friend yet
           var valid = true;
           for (var i = 0; i < myself.sharedByMe.length; i++) {
@@ -201,7 +192,6 @@ userSchema.statics.addFriend = function(username, friendname, cb) {
           }
 
           if (valid) {
-            console.log('this should have worked');
             myself.sharedByMe.push(friendname);
             friend.sharedToMe.push(username);
           }
@@ -275,7 +265,6 @@ userSchema.statics.checkIfLegit = function(username, password, cb) {
 
 //function that determines if this user already exists
 userSchema.statics.containsUser = function(name, cb) {
-  console.log('checking if user collection contains ' + name);
   User.find({username: name}, function (error, result) {
     if (error) {
       cb(error);
