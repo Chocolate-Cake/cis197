@@ -8,14 +8,24 @@
   },
   "author": "yimeng su",
   "license": "ISC",
+  "repository": {
+    "private": true
+  },
+  "devDependencies": {
+    "gulp": "*",
+    "gulp-eslint": "*"
+  },
   "dependencies": {
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.1",
     "cookie-session": "^2.0.0-beta.1",
-    "ejs": "^2.5.6",
-    "eslint": "^2.3.0",
-    "express": "^4.13.3",
+    "express": "*",
     "mongodb": "^2.2.25",
-    "mongoose": "^4.9.5"
+    "mongoose": "^4.9.5",
+    "gulp": "^3.9.0",
+    "jquery": "*",
+    "ejs": "*",
+    "eslint": "*",
+    "gulp-eslint": "^2.0.0"
   }
 }
