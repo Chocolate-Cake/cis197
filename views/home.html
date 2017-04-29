@@ -6,7 +6,7 @@
     </center>
   </head>
   <body>
-    <table style='width:100%; height:600px; padding:20px'>
+    <table style='width:100%; height:550px; padding:20px'>
       <tr style='height:30px; text-align:center'>
         <td style='width:33%; border: 1px solid black'>
           <b>My schedules</b>
@@ -68,6 +68,16 @@
       </tr>
     </table>
     <center>
+      <div>
+        Current display specification: <%= displayop %>
+        <br>
+        Please click one of these buttons if you would like to change your schedule display options
+        <button id='timeOfCreationOrder'>Order by Creation Date</button>
+        <button id='dateOrder'>Order by Date</button>
+        <button id='priorityOrder'>Order by Priority</button>
+        <button id='alphaOrder'>Order Alphabetically</button>
+      </div>
+      <br>
       <a href='/logout'>Log out</a>
     </center>
     <script src='/js/jquery-1.11.3.min.js'></script>

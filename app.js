@@ -111,11 +111,31 @@ app.get('/home', function (req, res) {
 
         var friends = myself.sharedByMe;
         var schedules = myself.schedules;
+        var num = myself.displayOp;
+        var str;
+        switch(num) {
+          case 1:
+            str = 'Order by Creation Date';
+          break;
+
+          case 2:
+            str = 'Order by Date';
+          break;
+
+          case 3:
+            str = 'Order by Priority';
+          break;
+
+          case 4:
+            str = 'Order Alphabetically';
+          break;
+        }
         res.render('home', {
           username: req.session.username, 
           arrSchedules: schedules,
           arrShared: shared,
-          arrFriends: friends
+          arrFriends: friends,
+          displayop: str
         });
       });
       } else {
@@ -129,7 +149,26 @@ app.post('/home', function (req, res) {
   var type = req.body.clicked;
   var input = req.body.attr;
 
+  console.log("TYPE " + type);
+
+  if (type === '1' || type === '2' || type === '3' || type === '4') {
+    User.findOne({username: req.session.username}, function (error, myself) {
+        if (myself) {
+          myself.displayOp = type;
+          myself.save(function (e) {
+            if (e) {
+              res.send('failed to change display options');
+            }
+          });
+          res.redirect('/home');
+        } else {
+          res.send('failed to find this user');
+        }
+      });
+  }
+
   switch(type) {
+
     case 'addschedule':
     if (input != '') {
       User.addSchedule(req.session.username, input, function (error) {
@@ -161,6 +200,8 @@ app.post('/home', function (req, res) {
       User.addFriend(req.session.username, input, function (error) {
         if (error) {
           res.send('failed to add friend');
+        } else {
+          res.redirect('/home');
         }
       });
     }
@@ -171,6 +212,8 @@ app.post('/home', function (req, res) {
       User.deleteFriend(req.session.username, input, function (e) {
         if (e) {
           res.send('failed to delete friend');
+        } else {
+          res.redirect('/home');
         }
       });
     }
@@ -201,6 +244,7 @@ app.post('/home', function (req, res) {
       });
     break;
 
+    default:
   }
 });
 
@@ -215,13 +259,57 @@ app.get('/viewschedule', function (req, res) {
   } else {
     switch(req.session.view) {
       case 'schedule':
-      Schedule.findOne({owner: req.session.username, name: req.session.n}, function (error, result) {
-        if (result) {
-          res.render('viewschedule', {name: result.name, owner: req.session.username, arrEvents: result.events});
+      User.findOne({username: req.session.username}, function (error, myself) {
+        if (myself) {
+          Schedule.findOne({owner: req.session.username, name: req.session.n}, function (error, result) {
+            if (result) {
+              var arr = result.events;
+              switch(myself.displayOp) {
+                case 1:
+                  //do nothing
+                break;
+
+                case 2:
+                  arr.sort(function (a, b) {
+                    if (a.date < b.date) {
+                      return -1;
+                    } else {
+                      return 1;
+                    }
+                  });
+                break;
+
+                case 3:
+                  arr.sort(function (a, b) {
+                    if (a.priority > b.priority) {
+                      return -1;
+                    } else {
+                      return 1;
+                    }
+                  });
+                break;
+
+                case 4:
+                  arr.sort(function (a, b) {
+                    if (a.name < b.name) {
+                      return -1;
+                    } else {
+                      return 1;
+                    }
+                  });
+                break;
+              }
+              
+              res.render('viewschedule', {name: result.name, owner: req.session.username, arrEvents: arr});
+            } else {
+              res.send("error displaying schedule");
+            }
+          });
         } else {
-          res.send("error displaying schedule");
+          res.send('failed to find this user');
         }
       });
+
       break;
       
       case 'shared':
@@ -242,10 +330,6 @@ app.post('/viewschedule', function (req, res) {
   switch (result) {
     case 'addEvent':
       res.redirect('/addevent');
-    break;
-    case 'changeDisplay':
-      console.log('result was change display');
-      //TODO call function CURRENTLY DOESN'T EXIST
     break;
     case 'home':
       res.redirect('/home');
@@ -330,59 +414,6 @@ app.post('/addevent', function (req, res) {
   }
 
   
-});
-
-//DISPLAYOPS.HTML---------------------------------
-app.get('/displayops', function (req, res) {
-  if (!req.session.username || req.session.username === '') {
-    res.send('failed to render add event');
-  } else {
-    User.findOne({username: req.session.username}, function (error, myself) {
-      if (myself) {
-        var num = myself.displayOp;
-        var str;
-        switch(num) {
-          case 1:
-            str = 'Order by Creation Date';
-          break;
-
-          case 2:
-            str = 'Order by Date';
-          break;
-
-          case 3:
-            str = 'Order by Priority';
-          break;
-
-          case 4:
-            str = 'Order Alphabetically';
-          break;
-        }
-        res.render('displayops', {displayop: str});
-      } else {
-        res.send("failed to find user display options");
-      }
-    });
-  }
-});
-
-app.post('/displayops', function (req, res) {
-  var choice = req.body.clicked;
-
-  User.findOne({username: req.session.username}, function (error, myself) {
-    if (myself) {
-      myself.displayOp = choice;
-      myself.save(function (e) {
-        if (!e) {
-          res.redirect('/home');
-        } else {
-          res.send('failed to save display options');
-        }
-      });
-    } else {
-      res.send('failed to find this user');
-    }
-  });
 });
 
 //TEST.HTML---------------------------------------
