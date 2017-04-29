@@ -232,7 +232,6 @@ app.get('/viewschedule', function (req, res) {
           res.send('errer loading up shedule');
         }
       });
-      //res.render('viewschedule', {name: 'placeholder', owner: 'placeholder', arrEvents: new Array()});
       break;
     }
   }
@@ -331,6 +330,59 @@ app.post('/addevent', function (req, res) {
   }
 
   
+});
+
+//DISPLAYOPS.HTML---------------------------------
+app.get('/displayops', function (req, res) {
+  if (!req.session.username || req.session.username === '') {
+    res.send('failed to render add event');
+  } else {
+    User.findOne({username: req.session.username}, function (error, myself) {
+      if (myself) {
+        var num = myself.displayOp;
+        var str;
+        switch(num) {
+          case 1:
+            str = 'Order by Creation Date';
+          break;
+
+          case 2:
+            str = 'Order by Date';
+          break;
+
+          case 3:
+            str = 'Order by Priority';
+          break;
+
+          case 4:
+            str = 'Order Alphabetically';
+          break;
+        }
+        res.render('displayops', {displayop: str});
+      } else {
+        res.send("failed to find user display options");
+      }
+    });
+  }
+});
+
+app.post('/displayops', function (req, res) {
+  var choice = req.body.clicked;
+
+  User.findOne({username: req.session.username}, function (error, myself) {
+    if (myself) {
+      myself.displayOp = choice;
+      myself.save(function (e) {
+        if (!e) {
+          res.redirect('/home');
+        } else {
+          res.send('failed to save display options');
+        }
+      });
+    } else {
+      res.send('failed to find this user');
+    }
+  });
 });
 
 //TEST.HTML---------------------------------------

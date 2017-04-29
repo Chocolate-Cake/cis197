@@ -10,7 +10,8 @@ var userSchema = new Schema({
   password: { type: String, required: true },
   schedules: {type: Array},
   sharedByMe: {type: Array},
-  sharedToMe: {type: Array}
+  sharedToMe: {type: Array},
+  displayOp: {type: Number, required: true}
 });
 
 //salt for securing the password
@@ -31,6 +32,7 @@ userSchema.statics.addUser = function(username, password, cb) {
   var newUser = new this({ 
     username: username, 
     password: password,
+    displayOp: 1
   });
   newUser.save(cb);
 }
@@ -257,34 +259,6 @@ userSchema.statics.deleteFriend = function (username, friendname, cb) {
   }
  });
 }
-/*
-userSchema.statics.deleteFriend = function (username, friendname, cb) {
-  this.findOne({username: username}, function (error, result) {
-    if (result) {
-      var valid = true;
-      for (var i = 0; i < result.sharedByMe.length; i++) {
-        if (result.sharedByMe[i] === friendname) {
-          result.sharedByMe.splice(i, 1);
-        }
-      }
-    }
-  });
-}
-
-userSchema.statics.friendDeleteMe = function (username, friendname, cb) {
-  this.findOne({username: friendname}, function (error, result) {
-    if (result) {
-      var valid = true;
-      for (var i = 0; i < result.sharedToMe.length; i++) {
-        if (result.sharedToMe[i] === username) {
-          result.sharedToMe.splice(i, 1);
-        }
-      }
-      result.save(cb);
-    }
-  });
-}
-*/
 
 //function that manages user login
 userSchema.statics.checkIfLegit = function(username, password, cb) {
