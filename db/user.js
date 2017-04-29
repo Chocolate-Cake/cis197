@@ -42,9 +42,10 @@ userSchema.statics.addSchedule = function(username, schedulename, cb) {
     name: schedulename,
     owner: username
   });
-
+  //find me
   this.findOne({username: username}, function (error, myself) {
     if (myself) {
+      //check schedule doesn't already exist
       Schedule.findOne({owner: username, name: schedulename}, function (error, result) {
         if (result) {
           console.log('schedule already exists');
@@ -75,20 +76,28 @@ userSchema.statics.deleteSchedule = function(username, schedulename, cb) {
       //find the schedule object to check that it actually exists
       Schedule.findOne({owner: username, name: schedulename}, function (err, sch) {
         if (sch) {
-          //delete schedule from my array of schedules
-          for (var i = 0; i < myself.schedules.length; i++) {
-            if (myself.schedules[i].name === schedulename) {
-              myself.schedules.splice(i, 1);
-            }
-          }
-          //delete schedule from collection of schedules
-          Schedule.remove({owner: username, name: schedulename}, function (err2) {
+
+          //find all events under this schedule and remove them
+          Event.remove({schedulename: schedulename, owner: username}, function (err2) {
             if (err2) {
               cb(err2);
-            } else {
-              myself.save(cb);
             }
-          });
+
+            //delete schedule from my array of schedules
+            for (var i = 0; i < myself.schedules.length; i++) {
+              if (myself.schedules[i].name === schedulename) {
+                myself.schedules.splice(i, 1);
+              }
+            }
+            //delete schedule from collection of schedules
+            Schedule.remove({owner: username, name: schedulename}, function (err2) {
+              if (err2) {
+                cb(err2);
+              } else {
+                myself.save(cb);
+              }
+            });
+          })
         } else {
           cb(err);
         }
@@ -174,39 +183,38 @@ userSchema.statics.deleteEvent = function(owner, schedulename, eventName, cb) {
 //function that adds a friend to the current user, so this person
 //can now view and edit my schedules
 userSchema.statics.addFriend = function(username, friendname, cb) {
-  this.findOne({username: username}, function (error, result) {
-    if (result) {
-      var valid = true;
-      for (var i = 0; i < result.sharedByMe.length; i++) {
-        if (result.sharedByMe[i] === friendname) {
-          valid = false;
+  var top = this;
+  this.findOne({username: friendname}, function (error, friend) {
+    if (friend) {
+      console.log('found friend exists');
+      top.findOne({username: username}, function (err, myself) {
+        if (myself) {
+          console.log('found i exist');
+          //check i haven't added this friend yet
+          var valid = true;
+          for (var i = 0; i < myself.sharedByMe.length; i++) {
+            if (myself.sharedByMe[i] === friendname) {
+              valid = false;
+            }
+          }
+
+          if (valid) {
+            console.log('this should have worked');
+            myself.sharedByMe.push(friendname);
+            friend.sharedToMe.push(username);
+          }
+
+          myself.save(function (e) {
+            if (!e) {
+              friend.save(cb);
+            } else {
+              cb(e);
+            }
+          });
+        } else {
+          cb(err);
         }
-      }
-
-      if (valid) {
-        result.sharedByMe.push(friendname);
-      }
-      result.save(cb);
-    } else {
-      cb(error);
-    }
-  });
-}
-
-userSchema.statics.friendAddMe = function (username, friendname, cb) {
-  this.findOne({username: friendname}, function (error, result) {
-    if (result) {
-      var valid = true;
-      for (var i = 0; i < result.sharedToMe.length; i++) {
-        if (result.sharedToMe[i] === username) {
-          valid = false;
-        }
-      }
-
-      if (valid) {
-        result.sharedToMe.push(username);
-      }
-      result.save(cb);
+      });
     } else {
       cb(error);
     }
@@ -214,6 +222,42 @@ userSchema.statics.friendAddMe = function (username, friendname, cb) {
 }
 
 //function that deletes a friend
+userSchema.statics.deleteFriend = function (username, friendname, cb) {
+ var top = this;
+ this.findOne({username: friendname}, function (error, friend) {
+  if (friend) {
+    top.findOne({username: username}, function (err, myself) {
+      if (myself) {
+        //delete friend from my attribute
+        for (var i = 0; i < myself.sharedByMe.length; i++) {
+          if (myself.sharedByMe[i] === friendname) {
+            myself.sharedByMe.splice(i, 1);
+          }
+        }
+
+        for (var i = 0; i < friend.sharedToMe.length; i++) {
+          if (friend.sharedToMe[i] === username) {
+            friend.sharedToMe.splice(i, 1);
+          }
+        }
+
+        myself.save(function (e) {
+          if (!e) {
+            friend.save(cb);
+          } else {
+            cb(e);
+          }
+        });
+      } else {
+        cb(err);
+      }
+    });
+  } else {
+    cb(error);
+  }
+ });
+}
+/*
 userSchema.statics.deleteFriend = function (username, friendname, cb) {
   this.findOne({username: username}, function (error, result) {
     if (result) {
@@ -240,6 +284,7 @@ userSchema.statics.friendDeleteMe = function (username, friendname, cb) {
     }
   });
 }
+*/
 
 //function that manages user login
 userSchema.statics.checkIfLegit = function(username, password, cb) {

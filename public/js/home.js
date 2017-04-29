@@ -8,6 +8,9 @@ $(document).ready(function() {
 	      data: { 
 	        clicked: 'addschedule',
 	        attr: input
+	      }, 
+	      success: function (data) {
+	      	window.location.href='/viewschedule';
 	      }
 	    });
 	});
@@ -21,6 +24,9 @@ $(document).ready(function() {
 	      data: { 
 	        clicked: 'deleteschedule',
 	        attr: input
+	      },
+	      success: function (data) {
+	      	location.reload();
 	      }
 	    });
 	});
@@ -34,6 +40,9 @@ $(document).ready(function() {
 	      data: { 
 	        clicked: 'addfriend',
 	        attr: input
+	      },
+	      success: function (data) {
+	      	location.reload();
 	      }
 	    });
 	});
@@ -47,6 +56,9 @@ $(document).ready(function() {
 	      data: { 
 	        clicked: 'deletefriend',
 	        attr: input
+	      },
+	      success: function (data) {
+	      	location.reload();
 	      }
 	    });
 	});
