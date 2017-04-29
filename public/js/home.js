@@ -94,20 +94,6 @@ $(document).ready(function() {
     window.location.href = '/viewschedule';
   });
   //----------------------------------------------------
-  $('#timeOfCreationOrder').click(function () {
-    console.log('timeOfCreationOrder');
-    $.ajax({
-      type: 'POST',
-      url: '/home',
-      data: { 
-        clicked: 1,
-      },
-      success: function (data) {
-        location.reload();
-      }
-    });
-  });
-  //----------------------------------------------------
   $('#dateOrder').click(function () {
     console.log('dateOrder');
     $.ajax({

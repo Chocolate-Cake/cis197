@@ -149,8 +149,6 @@ app.post('/home', function (req, res) {
   var type = req.body.clicked;
   var input = req.body.attr;
 
-  console.log("TYPE " + type);
-
   if (type === '1' || type === '2' || type === '3' || type === '4') {
     User.findOne({username: req.session.username}, function (error, myself) {
         if (myself) {
@@ -317,7 +315,7 @@ app.get('/viewschedule', function (req, res) {
         if (result) {
           res.render('viewschedule', {name: result.name, owner: result.owner, arrEvents: result.events});
         } else {
-          res.send('errer loading up shedule');
+          res.send('could not find schedule');
         }
       });
       break;
